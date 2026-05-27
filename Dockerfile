@@ -10,6 +10,10 @@ RUN yarn build
 FROM node:22-alpine AS production
 WORKDIR /app
 
-EXPOSE 4173
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./package.json
 
-CMD ["yarn", "preview", "--host", "0.0.0.0"]
+EXPOSE 80
+
+CMD ["yarn", "preview", "--host", "0.0.0.0", "--port", "80"]
