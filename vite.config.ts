@@ -6,7 +6,6 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   preview: {
     allowedHosts: true,
-    host: '0.0.0.0',
   },
   server: {
     allowedHosts: true,
