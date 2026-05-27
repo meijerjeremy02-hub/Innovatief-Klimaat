@@ -6,6 +6,9 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   preview: {
     allowedHosts: true,
-    host: 'innovatief-klimaat.template.nl',
+    host: '0.0.0.0',
+  },
+  server: {
+    allowedHosts: true,
   }
 })
