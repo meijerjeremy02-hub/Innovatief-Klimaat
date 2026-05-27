@@ -9,7 +9,6 @@ RUN yarn build
 # stage 2
 FROM node:22-alpine AS production
 WORKDIR /app
-COPY --from=build /app/build ./build
 
 EXPOSE 4173
 
