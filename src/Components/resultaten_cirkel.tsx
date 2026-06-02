@@ -115,7 +115,7 @@ export default function InnovatieCircel({
                 fill={d.dark ? 'white' : 'white'}
                 className="select-none pointer-events-none"
                 style={{
-                  fontSize: '13px',
+                  fontSize: '15px',
                   fontWeight: 600,
                 }}
               >
@@ -165,7 +165,7 @@ export default function InnovatieCircel({
               y={cy + 28}
               textAnchor="middle"
               style={{
-                fontSize: '13px',
+                fontSize: '16px',
                 fill: '#555',
                 fontWeight: 600,
               }}
@@ -178,7 +178,7 @@ export default function InnovatieCircel({
               y={cy + 46}
               textAnchor="middle"
               style={{
-                fontSize: '12px',
+                fontSize: '16px',
                 fill: '#1f2937',
               }}
             >
@@ -206,7 +206,7 @@ export default function InnovatieCircel({
               y={cy + 24}
               textAnchor="middle"
               style={{
-                fontSize: '12px',
+                fontSize: '16px',
                 fill: '#1f2937',
               }}
             >
@@ -218,7 +218,7 @@ export default function InnovatieCircel({
               y={cy + 42}
               textAnchor="middle"
               style={{
-                fontSize: '12px',
+                fontSize: '16px',
                 fill: '#1f2937',
               }}
             >
@@ -230,7 +230,7 @@ export default function InnovatieCircel({
               y={cy + 60}
               textAnchor="middle"
               style={{
-                fontSize: '12px',
+                fontSize: '16px',
                 fill: '#1f2937',
               }}
             >
@@ -240,7 +240,7 @@ export default function InnovatieCircel({
         )}
       </svg>
 
-      <p className="mt-4 min-h-6 text-base font-medium text-gray-900">
+      <p className="mt-4 min-h-6 text-base font-bold text-gray-900">
         {hovered !== null
           ? `${dims[hovered].short}: ${scores[hovered]}/25`
           : ''}
