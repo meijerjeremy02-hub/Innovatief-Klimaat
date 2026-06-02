@@ -47,7 +47,7 @@ export default function Vragenlijst() {
   return (
     <main className='min-w-full bg-linear-to-b from-orange-400 via-[#DECAB7] to-blue-900'>
       <div>
-        <div className="ml-6.5 mr-4.5 mt-4 px-2 md:p-5 md:mx-auto md:mb-10 md:mt-25 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
+        <div className="ml-6.5 mr-4.5 mt-4 px-2 md:p-5 md:mx-auto md:mb-10 md:mt-35 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
           <div className="p-1 text-center">
             <h1 className="text-6xl font-bold pb-8 pl-3">{onderwerpen[huidig]}</h1>
           </div>
