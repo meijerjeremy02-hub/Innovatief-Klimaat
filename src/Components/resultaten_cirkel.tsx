@@ -103,7 +103,7 @@ export default function InnovatieCircel({
               <path
                 d={arc(sa, ea, IR, OR)}
                 fill={isHovered ? hover : base}
-                stroke="white"
+                stroke="gray"
                 strokeWidth={3}
               />
 
@@ -112,7 +112,7 @@ export default function InnovatieCircel({
                 y={ly}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fill={d.dark ? '#2e2a5e' : '#3c3889'}
+                fill={d.dark ? 'white' : 'white'}
                 className="select-none pointer-events-none"
                 style={{
                   fontSize: '13px',
