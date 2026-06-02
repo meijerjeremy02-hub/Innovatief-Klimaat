@@ -1,5 +1,5 @@
 import { useState } from 'react'
-const borderKleur = ['border-purple-400', 'border-purple-500', 'border-purple-600', 'border-purple-700', 'border-purple-800']
+const borderKleur = ['border-blue-400', 'border-blue-500', 'border-blue-600', 'border-blue-700', 'border-blue-800']
 function VraagRij({ tekst }: { tekst: string }) {
   const [waarde, setWaarde] = useState<number | null>(null)
   return (
