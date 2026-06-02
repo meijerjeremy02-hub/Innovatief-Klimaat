@@ -47,7 +47,7 @@ export default function Vragenlijst() {
   return (
     <main className='min-w-full bg-linear-to-b from-orange-400 via-[#DECAB7] to-blue-900'>
       <div>
-        <div className="mx-auto p-5 mb-10 mt-25 w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
+        <div className="ml-6.5 mr-4.5 mt-4 px-2 md:p-5 md:mx-auto md:mb-10 md:mt-25 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
           <div className="p-1 text-center">
             <h1 className="text-6xl font-bold pb-8 pl-3">{onderwerpen[huidig]}</h1>
           </div>
@@ -62,19 +62,19 @@ export default function Vragenlijst() {
             <HuidigeVraag />
           </div>
 
-          <div className="px-4 mt-6">
+          <div className="px-10 mt-6">
             <Paginatie />
             <div className="flex mx-auto mb-10 gap-5 justify-center">
               <button
                 onClick={() => setHuidig(huidig - 1)}
                 disabled={huidig === 0}
-                className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 px-30 py-5 hover:bg-orange-300 disabled:opacity-30 cursor-pointer"
+                className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 disabled:opacity-30 cursor-pointer"
               >
                 Vorige
               </button>
               <button
                 onClick={() => huidig === 9 ? navigate('/resultaten') : setHuidig(huidig + 1)}
-                className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 px-30 py-5 hover:bg-orange-300 cursor-pointer"
+                className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 cursor-pointer"
               >
                 {huidig === 9 ? 'Verstuur' : 'Volgende'}
               </button>
