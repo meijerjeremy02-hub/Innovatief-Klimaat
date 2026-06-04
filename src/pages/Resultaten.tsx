@@ -17,7 +17,7 @@ export default function Resultaten() {
          <p className="text-center text-2xl font-bold">Het gemiddelde van jouw team</p>
         <Resultaten_Cirkel />   
         </div>
-        <div className="flex-1 flex-col gap-6">
+        <div className="hidden md:block flex-1 flex-col gap-6">
         <p className="text-center text-2xl font-bold">Het gemiddelde van alle teams</p>
         <Resultaten_Cirkel />
         </div>

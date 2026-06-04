@@ -1,45 +1,53 @@
 import { useState } from 'react'
 
+// --- GEDEELDE CONFIGURATIE & DATA ---
 const dims = [
-  { label: 'Vrijheid',                 short: 'Vrijheid',         dark: false },
-  { label: 'Ideesupport',              short: 'Ideesupport',      dark: true  },
-  { label: 'Vertrouwen &\nopenheid',   short: 'Vertrouwen',       dark: false },
-  { label: 'Dynamiek &\nlevendigheid', short: 'Dynamiek',         dark: true  },
-  { label: 'Speelsheid &\n humor',     short: 'Speelsheid',       dark: false },
-  { label: 'Dialoog',                  short: 'Dialoog',          dark: true  },
-  { label: 'Risico nemen',             short: 'Risico nemen',     dark: false },
-  { label: 'Tijd voor\nideeën',        short: 'Tijd voor ideeën', dark: true  },
-  { label: 'Conflict',                 short: 'Conflict',         dark: false },
-  { label: 'Uitdaging',                short: 'Uitdaging',        dark: true  },
+  { id: 1,  label: 'Vrijheid',                 short: 'Vrijheid',          dark: false },
+  { id: 2,  label: 'Ideesupport',              short: 'Ideesupport',       dark: true  },
+  { id: 3,  label: 'Vertrouwen &\nopenheid',   short: 'Vertrouwen',        dark: false },
+  { id: 4,  label: 'Dynamiek &\nlevendigheid', short: 'Dynamiek',          dark: true  },
+  { id: 5,  label: 'Speelsheid &\n humor',     short: 'Speelsheid',        dark: false },
+  { id: 6,  label: 'Dialoog',                  short: 'Dialoog',           dark: true  },
+  { id: 7,  label: 'Risico nemen',             short: 'Risico nemen',      dark: false },
+  { id: 8,  label: 'Tijd voor\nideeën',        short: 'Tijd voor ideeën',  dark: true  },
+  { id: 9,  label: 'Conflict',                 short: 'Conflict',          dark: false },
+  { id: 10, label: 'Uitdaging',                short: 'Uitdaging',         dark: true  },
 ]
 
+// Jouw originele paarse kleuren
 const LIGHT = '#B8B4D8'
 const DARK = '#7B77A8'
-const LIGHT_H = '#A09CC8'
-const DARK_H = '#5B5790'
+const LIGHT_H = '#A09CC1'
+const DARK_H = '#5B5899'
 
-const cx = 300
-const cy = 300
+// --- DESKTOP CONSTANTEN ---
+const dCx = 300
+const dCy = 300
+const dMaxOr = 260 
+const dIr = 90
+const dPush = 12 
+const dN = dims.length
+const dStep = (2 * Math.PI) / dN
+const gridScores = [5, 10, 15, 20, 25]
 
-const OR = 235
-const IR = 90
+// --- MOBIEL CONSTANTEN ---
+const mWidth = 600
+const mHeight = 460
+const mCx = 300
+const mCy = 415  
+const mOr = 265  
+const mIr = 135  
 
-const PUSH = 26
-const N = dims.length
-const STEP = (2 * Math.PI) / N
-
-function pt(r: number, a: number): [number, number] {
-  return [
-    cx + r * Math.cos(a),
-    cy + r * Math.sin(a),
-  ]
+// --- HULPFUNCTIES ---
+function pt(cx: number, cy: number, r: number, a: number): [number, number] {
+  return [cx + r * Math.cos(a), cy + r * Math.sin(a)]
 }
 
-function arc(sa: number, ea: number, r1: number, r2: number) {
-  const [x1, y1] = pt(r2, sa)
-  const [x2, y2] = pt(r2, ea)
-  const [x3, y3] = pt(r1, ea)
-  const [x4, y4] = pt(r1, sa)
+function arc(cx: number, cy: number, sa: number, ea: number, r1: number, r2: number) {
+  const [x1, y1] = pt(cx, cy, r2, sa)
+  const [x2, y2] = pt(cx, cy, r2, ea)
+  const [x3, y3] = pt(cx, cy, r1, ea)
+  const [x4, y4] = pt(cx, cy, r1, sa)
   const lg = ea - sa > Math.PI ? 1 : 0
 
   return `
@@ -51,200 +59,261 @@ function arc(sa: number, ea: number, r1: number, r2: number) {
   `
 }
 
-function scoreCol(score: number) {
-  if (score >= 21) return '#16a34a'
-  if (score >= 16) return '#65a30d'
-  if (score >= 11) return '#ca8a04'
-  if (score >= 6) return '#ea580c'
-  return '#dc2626'
+interface InnovatieKlimaatProps {
+  personalScores?: number[]
+  teamScores?: number[]
+  collegeScores?: number[]
+  showIntro?: boolean
 }
 
-interface Props {
-  scores?: number[]
-}
-
-export default function InnovatieCircel({
-  scores = [18, 15, 20, 12, 22, 17, 8, 19, 14, 21],
-}: Props) {
+export default function InnovatieKlimaatWidget({
+  personalScores = [19, 16, 22, 14, 24, 18, 9, 20, 15, 22],
+  teamScores = [18, 15, 20, 12, 22, 17, 8, 19, 14, 21],
+  collegeScores = [15, 14, 17, 13, 19, 16, 11, 15, 13, 17],
+  showIntro = true
+}: InnovatieKlimaatProps) {
+  
+  // --- STATE ---
   const [hovered, setHovered] = useState<number | null>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [viewMode, setViewMode] = useState<'team' | 'college'>('team')
 
-  const labelR = (IR + OR) / 2
+  // --- MOBIELE CARROUSEL BEREKENINGEN ---
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev === 0 ? dims.length - 1 : prev - 1))
+  }
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev === dims.length - 1 ? 0 : prev + 1))
+  }
+
+  const visiblePositions = [
+    { dIndex: (activeIndex - 1 + dims.length) % dims.length, pos: 0 },
+    { dIndex: activeIndex, pos: 1 },
+    { dIndex: (activeIndex + 1) % dims.length, pos: 2 }
+  ]
+
+  const segmentDegrees = 42 
+  const segmentWidth = (segmentDegrees * Math.PI) / 180
+  const mStartAngle = -Math.PI / 2 - (segmentWidth * 1.5)
+
+  const rightScoreLabel = viewMode === 'team' ? 'JOUW TEAM' : 'COLLEGE-WIJD'
+  const rightScoreValue = viewMode === 'team' ? teamScores[activeIndex] : collegeScores[activeIndex]
 
   return (
-    <div className="flex flex-col items-center justify-center py-10">
-      <svg
-        viewBox="0 0 600 600"
-        className="w-162.5 max-w-full overflow-visible"
-      >
-        {dims.map((d, i) => {
-          const sa = i * STEP - Math.PI / 2
-          const ea = (i + 1) * STEP - Math.PI / 2
-          const ma = (sa + ea) / 2
+    <>
+      {/* ========================================================== */}
+      {/* LAPTOP LAYOUT: Zichtbaar op md-schermen en groter         */}
+      {/* ========================================================== */}
+      <div className="hidden md:flex flex-col items-center justify-center py-10">
+        <svg viewBox="0 0 600 600" className="w-162.5 max-w-full overflow-visible">
+          {/* Achtergrond Schaalverdeling */}
+          <g opacity="0.35">
+            {gridScores.map((gScore) => {
+              const r = dIr + ((dMaxOr - dIr) * gScore) / 25
+              return (
+                <circle
+                  key={gScore}
+                  cx={dCx}
+                  cy={dCy}
+                  r={r}
+                  fill="none"
+                  stroke="#9ca3af"
+                  strokeWidth={1}
+                  strokeDasharray={gScore === 25 ? '0' : '4 4'}
+                />
+              )
+            })}
+            {dims.map((_, i) => {
+              const angle = i * dStep - Math.PI / 2
+              const [xLink, yLink] = pt(dCx, dCy, dMaxOr, angle)
+              return (
+                <line key={i} x1={dCx} y1={dCy} x2={xLink} y2={yLink} stroke="#9ca3af" strokeWidth={1} />
+              )
+            })}
+          </g>
 
-          const tx = Math.cos(ma) * PUSH
-          const ty = Math.sin(ma) * PUSH
+          {/* De Dynamische Segmenten */}
+          {dims.map((d, i) => {
+            const score = teamScores[i] ?? 0
+            const currentOR = dIr + ((dMaxOr - dIr) * score) / 25
 
-          const isHovered = hovered === i
+            const sa = i * dStep - Math.PI / 2
+            const ea = (i + 1) * dStep - Math.PI / 2
+            const ma = (sa + ea) / 2
 
-          const base = d.dark ? DARK : LIGHT
-          const hover = d.dark ? DARK_H : LIGHT_H
+            const tx = Math.cos(ma) * dPush
+            const ty = Math.sin(ma) * dPush
 
-          const [lx, ly] = pt(labelR, ma)
-          const lines = d.label.split('\n')
+            const isHovered = hovered === i
+            
+            // Originele paarse kleur-bepaling (om en om)
+            const base = d.dark ? DARK : LIGHT
+            const hoverColor = d.dark ? DARK_H : LIGHT_H
+            const segmentColor = isHovered ? hoverColor : base
 
-          return (
-            <g
-              key={i}
-              transform={`translate(${isHovered ? tx : 0} ${isHovered ? ty : 0})`}
-              className="cursor-pointer transition-all duration-200"
-              onMouseEnter={() => setHovered(i)}
-              onMouseLeave={() => setHovered(null)}
-            >
-              <path
-                d={arc(sa, ea, IR, OR)}
-                fill={isHovered ? hover : base}
-                stroke="gray"
-                strokeWidth={3}
-              />
+            const labelR = (dIr + currentOR) / 2
+            const [lx, ly] = pt(dCx, dCy, labelR, ma)
+            const lines = d.label.split('\n')
 
-              <text
-                x={lx}
-                y={ly}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fill={d.dark ? 'white' : 'white'}
-                className="select-none pointer-events-none"
-                style={{
-                  fontSize: '15px',
-                  fontWeight: 600,
+            return (
+              <g
+                key={i}
+                transform={`translate(${isHovered ? tx : 0} ${isHovered ? ty : 0})`}
+                className="cursor-pointer transition-all duration-500"
+                onMouseEnter={() => setHovered(i)}
+                onMouseLeave={() => setHovered(null)}
+              >
+                <path d={arc(dCx, dCy, sa, ea, dIr, currentOR)} fill={segmentColor} stroke="gray" strokeWidth={2} />
+                <text
+                  x={lx}
+                  y={ly}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fill="black"
+                  className="select-none pointer-events-none drop-shadow-[0_1px_2px_rgba(255,255,255,255.5)]"
+                  style={{ fontSize: '12px', fontWeight: 700 }}
+                >
+                  {lines.map((line, lineIndex) => (
+                    <tspan key={lineIndex} x={lx} dy={lineIndex === 0 ? `${-(lines.length - 1) * 0.6}em` : '1.25em'}>
+                      {line}
+                    </tspan>
+                  ))}
+                </text>
+              </g>
+            )
+          })}
+
+          {/* Centrale Witte Ring */}
+          <circle cx={dCx} cy={dCy} r={dIr - 2} fill="white" />
+
+          {hovered !== null ? (
+            <>
+              <text 
+                x={dCx} 
+                y={dCy - 8} 
+                textAnchor="middle" 
+                dominantBaseline="middle" 
+                style={{ 
+                  fontSize: '48px', 
+                  fontWeight: 800, 
+                  // Matcht nu de exacte paarse hover-kleur van het actieve segment
+                  fill: dims[hovered].dark ? DARK_H : LIGHT_H 
                 }}
               >
-                {lines.map((line, lineIndex) => (
-                  <tspan
-                    key={lineIndex}
-                    x={lx}
-                    dy={
-                      lineIndex === 0
-                        ? `${-(lines.length - 1) * 0.6}em`
-                        : '1.25em'
-                    }
-                  >
-                    {line}
-                  </tspan>
-                ))}
+                {teamScores[hovered]}
               </text>
-            </g>
-          )
-        })}
+              <text x={dCx} y={dCy + 28} textAnchor="middle" style={{ fontSize: '16px', fill: '#555', fontWeight: 600 }}>
+                {dims[hovered].short}
+              </text>
+              <text x={dCx} y={dCy + 46} textAnchor="middle" style={{ fontSize: '16px', fill: '#1f2937' }}>/25</text>
+            </>
+          ) : (
+            <>
+              <text x={dCx} y={dCy - 8} textAnchor="middle" dominantBaseline="middle" style={{ fontSize: '48px', fontWeight: 800, fill: '#f97316' }}>10</text>
+              <text x={dCx} y={dCy + 24} textAnchor="middle" style={{ fontSize: '16px', fill: '#1f2937' }}>Dimensies van</text>
+              <text x={dCx} y={dCy + 42} textAnchor="middle" style={{ fontSize: '16px', fill: '#1f2937' }}>een innovatief</text>
+              <text x={dCx} y={dCy + 60} textAnchor="middle" style={{ fontSize: '16px', fill: '#1f2937' }}>klimaat</text>
+            </>
+          )}
+        </svg>
+        <p className="mt-4 min-h-6 text-base font-bold text-gray-900">
+          {hovered !== null ? `${dims[hovered].short}: ${teamScores[hovered]}/25` : ''}
+        </p>
+      </div>
 
-        <circle
-          cx={cx}
-          cy={cy}
-          r={IR - 2}
-          fill="white"
-        />
+      {/* ========================================================== */}
+      {/* MOBIEL LAYOUT: Alleen zichtbaar op schermen kleiner dan md */}
+      {/* ========================================================== */}
+      <div className="flex md:hidden w-full max-w-md mx-auto flex-col justify-between bg-[#F8FAFC] font-sans text-[#1E254C] relative overflow-hidden select-none rounded-[40px] shadow-2xl border border-slate-100">
+        
+        {/* Top Header & Introductie */}
+        <div className="w-full text-left pt-8 px-6 z-10">
+          <h3 className="text-3xl font-black tracking-tight text-[#0F172A] leading-tight">Resultaten<br />innovatieklimaat</h3>
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mt-1">{dims.length} dimensies van een innovatief klimaat</p>
 
-        {hovered !== null ? (
-          <>
-            <text
-              x={cx}
-              y={cy - 8}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              style={{
-                fontSize: '48px',
-                fontWeight: 800,
-                fill: scoreCol(scores[hovered]),
-              }}
-            >
-              {scores[hovered]}
-            </text>
+          {showIntro && (
+            <div className="bg-white/80 backdrop-blur-sm border border-slate-100 rounded-2xl p-4 text-gray-500 text-xs leading-relaxed shadow-sm mt-4">
+              Op basis van jouw antwoorden hebben we een overzicht gemaakt van de sterke punten en ontwikkelpunten binnen jouw team. Blader door de dimensies om de resultaten te vergelijken.
+            </div>
+          )}
+          
+          <div className="text-center mt-6">
+            <p className="text-purple-600 font-bold text-[11px] tracking-widest uppercase">Dimensie {dims[activeIndex].id} van {dims.length}</p>
+            <h4 className="text-3xl font-black mt-1 text-[#1E254C] tracking-tight">{dims[activeIndex].label.replace('\n', ' ')}</h4>
+          </div>
+        </div>
 
-            <text
-              x={cx}
-              y={cy + 28}
-              textAnchor="middle"
-              style={{
-                fontSize: '16px',
-                fill: '#555',
-                fontWeight: 600,
-              }}
-            >
-              {dims[hovered].short}
-            </text>
+        {/* Het Wiel & Carrousel */}
+        <div className="relative w-full flex flex-col justify-end mt-2">
+          
+          {/* Pijlen */}
+          <div className="absolute top-[22%] left-4 z-30">
+            <button onClick={handlePrev} className="bg-white text-gray-700 shadow-lg rounded-full p-3 border border-slate-100 active:scale-95">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+            </button>
+          </div>
+          <div className="absolute top-[22%] right-4 z-30">
+            <button onClick={handleNext} className="bg-white text-gray-700 shadow-lg rounded-full p-3 border border-slate-100 active:scale-95">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+            </button>
+          </div>
 
-            <text
-              x={cx}
-              y={cy + 46}
-              textAnchor="middle"
-              style={{
-                fontSize: '16px',
-                fill: '#1f2937',
-              }}
-            >
-              /25
-            </text>
-          </>
-        ) : (
-          <>
-            <text
-              x={cx}
-              y={cy - 8}
-              textAnchor="middle"
-              dominantBaseline="middle"
-              style={{
-                fontSize: '48px',
-                fontWeight: 800,
-                fill: '#f97316',
-              }}
-            >
-              10
-            </text>
+          {/* Carrousel Svg */}
+          <div className="w-full relative z-0 -mb-24 transform translate-y-4 overflow-visible">
+            <svg viewBox={`0 0 ${mWidth} ${mHeight}`} className="w-full overflow-visible">
+              {visiblePositions.map(({ dIndex, pos }) => {
+                const sa = mStartAngle + pos * segmentWidth
+                const ea = sa + segmentWidth
+                const midAngleDeg = ((sa + ea) / 2 * 180) / Math.PI
+                const isActive = pos === 1
+                const baseColor = isActive ? '#D9D6EF' : '#EDEBF7'
+                const textRadius = (mIr + mOr) / 2
 
-            <text
-              x={cx}
-              y={cy + 24}
-              textAnchor="middle"
-              style={{
-                fontSize: '16px',
-                fill: '#1f2937',
-              }}
-            >
-              Dimensies van
-            </text>
+                return (
+                  <g key={dIndex} className="transition-all duration-500 ease-out">
+                    <path d={arc(mCx, mCy, sa, ea, mIr, mOr)} fill={baseColor} stroke="#F8FAFC" strokeWidth={4} />
+                    <g transform={`translate(${mCx}, ${mCy}) rotate(${midAngleDeg + 90}) translate(0, ${-textRadius})`}>
+                      <text textAnchor="middle" dominantBaseline="middle" className="font-black fill-[#1E254C] select-none pointer-events-none" style={{ fontSize: isActive ? '16px' : '13px' }} opacity={isActive ? 1 : 0.4}>
+                        {dims[dIndex].short}
+                      </text>
+                    </g>
+                  </g>
+                )
+              })}
+            </svg>
+          </div>
 
-            <text
-              x={cx}
-              y={cy + 42}
-              textAnchor="middle"
-              style={{
-                fontSize: '16px',
-                fill: '#1f2937',
-              }}
-            >
-              een innovatief
-            </text>
+          {/* Scorekaart */}
+          <div className="w-full bg-white rounded-t-[120px] shadow-[0_-20px_40px_rgba(148,163,184,0.12)] px-8 pt-20 pb-8 relative z-10 flex flex-col items-center border-t border-slate-100/60">
+            <div className="flex bg-slate-100 p-1 rounded-xl mb-6 shadow-inner w-60 border border-slate-200/30">
+              <button onClick={() => setViewMode('team')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'team' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>Jouw team</button>
+              <button onClick={() => setViewMode('college')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'college' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>College-wijd</button>
+            </div>
 
-            <text
-              x={cx}
-              y={cy + 60}
-              textAnchor="middle"
-              style={{
-                fontSize: '16px',
-                fill: '#1f2937',
-              }}
-            >
-              klimaat
-            </text>
-          </>
-        )}
-      </svg>
+            <div className="w-full flex justify-between items-center text-center px-4 mb-6">
+              <div className="flex-1">
+                <p className="text-purple-600 text-[10px] font-black tracking-widest uppercase">JOUW RESULTAAT</p>
+                <p className="text-5xl font-black text-[#1E254C] mt-1.5 tracking-tighter">{personalScores[activeIndex]}</p>
+                <p className="text-gray-400 text-xs font-bold mt-0.5">/25</p>
+              </div>
+              <div className="h-12 w-px bg-slate-100" />
+              <div className="flex-1">
+                <p className="text-gray-400 text-[10px] font-black tracking-widest uppercase">{rightScoreLabel}</p>
+                <p className="text-5xl font-black text-[#635B9B] mt-1.5 tracking-tighter">{rightScoreValue}</p>
+                <p className="text-gray-400 text-xs font-bold mt-0.5">/25</p>
+              </div>
+            </div>
 
-      <p className="mt-4 min-h-6 text-base font-bold text-gray-900">
-        {hovered !== null
-          ? `${dims[hovered].short}: ${scores[hovered]}/25`
-          : ''}
-      </p>
-    </div>
+            <div className="flex space-x-2 mt-2">
+              {dims.map((_, i) => (
+                <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === activeIndex ? 'w-4 bg-[#7B77A8]' : 'w-1.5 bg-slate-200'}`} />
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </>
   )
 }
