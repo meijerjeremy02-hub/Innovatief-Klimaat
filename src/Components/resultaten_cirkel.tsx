@@ -70,7 +70,6 @@ export default function InnovatieKlimaatWidget({
   personalScores = [19, 16, 22, 14, 24, 18, 9, 20, 15, 22],
   teamScores = [18, 15, 20, 12, 22, 17, 8, 19, 14, 21],
   collegeScores = [15, 14, 17, 13, 19, 16, 11, 15, 13, 17],
-  showIntro = true
 }: InnovatieKlimaatProps) {
   
   // --- STATE ---
@@ -228,40 +227,29 @@ export default function InnovatieKlimaatWidget({
       <div className="flex md:hidden w-full max-w-md mx-auto flex-col justify-between bg-[#F8FAFC] font-sans text-[#1E254C] relative overflow-hidden select-none rounded-[40px] shadow-2xl border border-slate-100">
         
         {/* Top Header & Introductie */}
-        <div className="w-full text-left pt-8 px-6 z-10">
-          <h3 className="text-3xl font-black tracking-tight text-[#0F172A] leading-tight">Resultaten<br />innovatieklimaat</h3>
-          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mt-1">{dims.length} dimensies van een innovatief klimaat</p>
-
-          {showIntro && (
-            <div className="bg-white/80 backdrop-blur-sm border border-slate-100 rounded-2xl p-4 text-gray-500 text-xs leading-relaxed shadow-sm mt-4">
-              Op basis van jouw antwoorden hebben we een overzicht gemaakt van de sterke punten en ontwikkelpunten binnen jouw team. Blader door de dimensies om de resultaten te vergelijken.
-            </div>
-          )}
-          
-          <div className="text-center mt-6">
-            <p className="text-purple-600 font-bold text-[11px] tracking-widest uppercase">Dimensie {dims[activeIndex].id} van {dims.length}</p>
-            <h4 className="text-3xl font-black mt-1 text-[#1E254C] tracking-tight">{dims[activeIndex].label.replace('\n', ' ')}</h4>
+          <div className="text-center my-10">
+            <p className="text-purple-600 font-bold text-10 tracking-widest uppercase">Dimensie {dims[activeIndex].id} van {dims.length}</p>
+            <h4 className="text-4xl font-black mt-1 text-[#1E254C] tracking-tight">{dims[activeIndex].label.replace('\n', ' ')}</h4>
           </div>
-        </div>
 
         {/* Het Wiel & Carrousel */}
         <div className="relative w-full flex flex-col justify-end mt-2">
           
           {/* Pijlen */}
           <div className="absolute top-[22%] left-4 z-30">
-            <button onClick={handlePrev} className="bg-white text-gray-700 shadow-lg rounded-full p-3 border border-slate-100 active:scale-95">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+            <button onClick={handlePrev} className="bg-white text-gray-700 shadow-lg rounded-full p-4 border border-slate-100 active:scale-95">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
             </button>
           </div>
           <div className="absolute top-[22%] right-4 z-30">
-            <button onClick={handleNext} className="bg-white text-gray-700 shadow-lg rounded-full p-3 border border-slate-100 active:scale-95">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+            <button onClick={handleNext} className="bg-white text-gray-700 shadow-lg rounded-full p-4 border border-slate-100 active:scale-95">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
             </button>
           </div>
 
           {/* Carrousel Svg */}
           <div className="w-full relative z-0 -mb-24 transform translate-y-4 overflow-visible">
-            <svg viewBox={`0 0 ${mWidth} ${mHeight}`} className="w-full overflow-visible">
+            <svg viewBox={`0 -20 ${mWidth} ${mHeight}`} className="w-full overflow-visible">
               {visiblePositions.map(({ dIndex, pos }) => {
                 const sa = mStartAngle + pos * segmentWidth
                 const ea = sa + segmentWidth
@@ -285,7 +273,7 @@ export default function InnovatieKlimaatWidget({
           </div>
 
           {/* Scorekaart */}
-          <div className="w-full bg-white rounded-t-[120px] shadow-[0_-20px_40px_rgba(148,163,184,0.12)] px-8 pt-20 pb-8 relative z-10 flex flex-col items-center border-t border-slate-100/60">
+          <div className="w-full bg-white rounded-t-[120px] rounded-b-xl shadow-[0_-10px_40px_rgba(148,163,184,2.4)] px-8 pt-20 pb-8 relative z-10 flex flex-col items-center border-t border-slate-100/60">
             <div className="flex bg-slate-100 p-1 rounded-xl mb-6 shadow-inner w-60 border border-slate-200/30">
               <button onClick={() => setViewMode('team')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'team' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>Jouw team</button>
               <button onClick={() => setViewMode('college')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'college' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>College-wijd</button>

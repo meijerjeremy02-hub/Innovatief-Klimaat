@@ -14,11 +14,11 @@ export default function Resultaten() {
       </p>
       <div className="md:flex md:w-9/10 mx-auto w-full mt-10 p-6 border-2 border-blue-900 bg-blue-50 rounded-lg">
         <div className="flex-1 flex-col gap-6">
-         <p className="text-center text-2xl font-bold">Het gemiddelde van jouw team</p>
+         <p className="hidden md:block text-center text-2xl font-bold">Het gemiddelde van jouw team</p>
         <Resultaten_Cirkel />   
         </div>
         <div className="hidden md:block flex-1 flex-col gap-6">
-        <p className="text-center text-2xl font-bold">Het gemiddelde van alle teams</p>
+        <p className="hidden md:block text-center text-2xl font-bold">Het gemiddelde van alle teams</p>
         <Resultaten_Cirkel />
         </div>
       </div>
