@@ -249,7 +249,7 @@ export default function InnovatieKlimaatWidget({
 
           {/* Carrousel Svg */}
           <div className="w-full relative z-0 -mb-24 transform translate-y-4 overflow-visible">
-            <svg viewBox={`0 -20 ${mWidth} ${mHeight}`} className="w-full overflow-visible">
+            <svg viewBox={`0 -15 ${mWidth} ${mHeight}`} className="w-full overflow-visible">
               {visiblePositions.map(({ dIndex, pos }) => {
                 const sa = mStartAngle + pos * segmentWidth
                 const ea = sa + segmentWidth
