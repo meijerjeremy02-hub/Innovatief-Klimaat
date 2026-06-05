@@ -236,12 +236,12 @@ export default function InnovatieKlimaatWidget({
         <div className="relative w-full flex flex-col justify-end mt-2">
           
           {/* Pijlen */}
-          <div className="absolute top-[15%] left-4 z-30">
+          <div className="absolute top-[10%] left-4 z-30">
             <button onClick={handlePrev} className="bg-white text-gray-700 shadow-lg rounded-full p-4 border border-slate-100 active:scale-95">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
             </button>
           </div>
-          <div className="absolute top-[15%] right-4 z-30">
+          <div className="absolute top-[10%] right-4 z-30">
             <button onClick={handleNext} className="bg-white text-gray-700 shadow-lg rounded-full p-4 border border-slate-100 active:scale-95">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
             </button>
