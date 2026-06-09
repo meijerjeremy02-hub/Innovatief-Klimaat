@@ -9,7 +9,6 @@ import Vragen7 from '../Components/vragen7'
 import Vragen8 from '../Components/vragen8'
 import Vragen9 from '../Components/vragen9'
 import Vragen10 from '../Components/vragen10'
-import Paginatie from '../Components/Paginatie'
 import { useVragen } from '../Components/VragenContext'
 import Cirkelv1 from '../images/Cirkelv1.jpg'
 import Cirkelv2 from '../images/Cirkelv2.jpg'
@@ -47,7 +46,7 @@ export default function Vragenlijst() {
   return (
     <main className='min-w-full bg-linear-to-b from-orange-400 via-[#DECAB7] to-blue-900'>
       <div>
-        <div className="ml-6.5 mr-4.5 mt-4 px-2 md:p-5 md:mx-auto md:mb-10 md:mt-35 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
+        <div className="ml-6.5 mr-4.5 mt-4 px-2 md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
           <div className="p-1 text-center">
             <h1 className="text-6xl font-bold pb-8 pl-3">{onderwerpen[huidig]}</h1>
           </div>
@@ -63,7 +62,6 @@ export default function Vragenlijst() {
           </div>
 
           <div className="px-10 mt-6">
-            <Paginatie />
             <div className="flex mx-auto mb-10 gap-5 justify-center">
               <button
                 onClick={() => setHuidig(huidig - 1)}

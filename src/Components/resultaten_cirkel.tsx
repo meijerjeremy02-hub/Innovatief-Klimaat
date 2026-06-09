@@ -18,13 +18,11 @@ const DARK = '#7B77A8'
 const LIGHT_H = '#A09CC1'
 const DARK_H = '#5B5899'
 
-// Logische Tailwind kleurkoppeling via Hex-waarden
 const scoreColor = (score: number) => {
-  if (score <= 5)  return '#f97316' // Deltion Oranje (Kritiek / Laag)
-  if (score <= 10) return '#eab308' // Warm Goudgeel (Matig)
-  if (score <= 15) return '#94a3b8' // Rustig Slate-Grijs (Voldoende / Gemiddeld)
-  if (score <= 20) return '#2563eb' // Helder Blauw (Goed)
-  return '#1e1b4b'                  // Deep Indigo / Marine (Uitstekend)
+  if (score <= 6)  return '#ef4444' // Helder Rood (Kritiek / Laag)
+  if (score <= 11) return '#f97316' // Warm Oranje (Matig)
+  if (score <= 16) return '#1e9ba2' // Fris Groen (Voldoende / Goed)
+  return '#22c55e'                  // Deep Indigo / Marine (Uitstekend)
 }
 
 const dCx = 300

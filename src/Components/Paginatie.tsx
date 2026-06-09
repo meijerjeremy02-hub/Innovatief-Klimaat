@@ -13,12 +13,12 @@ export default function Paginatie() {
     Math.abs(i - huidig) <= 1
 
   return (
-    <div className="lg:fixed lg:top-4 lg:right-0 flex flex-col gap-2 bg-transparent border-2 md:mr-0 border-blue-900 rounded-md -mt-4.5 md:px-4 px-3 py-3 -mx-11 md:border-transparent">
-      <div className="flex gap-1 flex-nowrap items-center justify-center">
+    <div className="flex flex-col gap-2 bg-transparent border-2 border-blue-900 rounded-md md:border-transparent">
+      <div className="flex gap-1 flex-col flex-nowrap items-center justify-center">
         <button
           onClick={() => setHuidig(huidig - 1)}
           disabled={huidig === 0}
-          className="px-2 py-1 text-sm md:h-10 md:w-10 md:text-lg border-3 bg-white border-blue-900 rounded-md disabled:opacity-30 cursor-pointer"
+          className="px-2 py-1 text-sm md h-10 md:w-10 md:text-lg border-3 bg-white border-blue-900 rounded-md disabled:opacity-30 cursor-pointer"
         >
           ←
         </button>
@@ -81,8 +81,8 @@ export default function Paginatie() {
       </div>
 
       <div>
-        <div className="flex justify-between text-[9px] md:text-sm text-gray-800 mb-1">
-          <span>Voortgang</span>
+        <div className="flex text-center justify-between text-[9px] md:text-xl md: text-gray-800 mb-1">
+          <span className="md:hidden block">Voortgang</span>
           <span>
             {huidig + 1} / {TOTAAL}
           </span>
@@ -103,7 +103,7 @@ export default function Paginatie() {
           onClick={() => navigate('/resultaten')}
           className="min-w-full mr md:max-w-[80%] text-sm md:mt-1 md:text-lg border-3 border-blue-900 rounded-md bg-orange-200 text-orange-900 cursor-pointer"
         >
-          Verstuur ✓
+          Send ✓
         </button>
       )}
     </div>

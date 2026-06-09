@@ -1,10 +1,10 @@
 import { Link } from 'react-router'
 import Resultaten_Cirkel from '../Components/resultaten_cirkel'
 
-export default function Resultaten() {
+export default function RESULTATEN() {
   return (
 <div className='bg-linear-to-b from-orange-400 via-[#DECAB7] to-blue-900'>
-  <div className="flex flex-col flex-1 mt-10 border-2 border-blue-900  bg-white rounded-lg mb-15 ml-6 mr-2 md:ml-10 md:mr-10">
+  <div className="flex flex-col flex-1 mt-10 border-2 border-blue-900  bg-white rounded-lg mb-15 ml-6 md:ml-10 md:mr-10">
     <div className="flex flex-col p-1.5 md:p-5 min-h-screen text-center w-full gap-6">
       <h1 className="ml-16 text-4xl font-bold">
         Resultaten
