@@ -114,6 +114,27 @@ export default function InnovatieKlimaatWidget({
                 <line key={i} x1={dCx} y1={dCy} x2={xLink} y2={yLink} stroke="#9ca3af" strokeWidth={1} />
               )
             })}
+            {gridScores.map((gScore) => {
+              const r = dIr + ((dMaxOr - dIr) * gScore) / 25
+              return dims.map((_, i) => {
+                const sa = i * dStep - Math.PI / 2
+                const ea = (i + 1) * dStep - Math.PI / 2
+                const ma = (sa + ea) / 2
+                const [x, y] = pt(dCx, dCy, r, ma)
+                return (
+                  <text
+                    key={`grid-${gScore}-${i}`}
+                    x={x}
+                    y={y}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="select-none pointer-events-none text-[9px] fill-gray-400"
+                  >
+                    {gScore}
+                  </text>
+                )
+              })
+            })}
           </g>
 
           {dims.map((d, i) => {
@@ -143,7 +164,7 @@ export default function InnovatieKlimaatWidget({
                 onMouseEnter={() => setHovered(i)}
                 onMouseLeave={() => setHovered(null)}
               >
-                <path d={arc(dCx, dCy, sa, ea, dIr, currentOR)} fill={segmentColor} stroke="white" strokeWidth={2} />
+                <path d={arc(dCx, dCy, sa, ea, dIr, currentOR)} fill={segmentColor} stroke="gray" strokeWidth={2} />
                 <text
                   x={lx}
                   y={ly}

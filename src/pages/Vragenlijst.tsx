@@ -10,20 +10,19 @@ import Vragen8 from '../Components/vragen8'
 import Vragen9 from '../Components/vragen9'
 import Vragen10 from '../Components/vragen10'
 import { useVragen } from '../Components/VragenContext'
-import Cirkelv1 from '../images/Cirkelv1.jpg'
-import Cirkelv2 from '../images/Cirkelv2.jpg'
-import Cirkelv3 from '../images/Cirkelv3.jpg'
-import Cirkelv4 from '../images/Cirkelv4.jpg'
-import Cirkelv5 from '../images/Cirkelv5.jpg'
-import Cirkelv6 from '../images/Cirkelv6.jpg'
-import Cirkelv7 from '../images/Cirkelv7.jpg'
-import Cirkelv8 from '../images/Cirkelv8.jpg'
-import Cirkelv9 from '../images/Cirkelv9.jpg'
-import Cirkelv10 from '../images/Cirkelv10.jpg'
+import Cirkelv1 from '../images/Foto1.png'
+import Cirkelv2 from '../images/foto2.png'
+import Cirkelv3 from '../images/foto3.png'
+import Cirkelv4 from '../images/foto4.png'
+import Cirkelv5 from '../images/foto5.png'
+import Cirkelv6 from '../images/foto6.png'
+import Cirkelv7 from '../images/foto7.png'
+import Cirkelv8 from '../images/foto8.png'
+import Cirkelv9 from '../images/foto9.png'
+import Cirkelv10 from '../images/foto10.png'
 
 const vragen = [Vragen1, Vragen2, Vragen3, Vragen4, Vragen5, Vragen6, Vragen7, Vragen8, Vragen9, Vragen10]
 const cirkels = [Cirkelv1, Cirkelv2, Cirkelv3, Cirkelv4, Cirkelv5, Cirkelv6, Cirkelv7, Cirkelv8, Cirkelv9, Cirkelv10]
-const onderwerpen = ['Vrijheid', 'Ideesupport', 'Vertrouwen en openheid', 'Dynamiek en levendigheid', 'Speelsheid en humor', 'Dialoog', 'Risico nemen', 'Tijd voor ideen', 'Conflict', 'Uitdaging']
 
 const uitleg = [
   'Een klimaat met veel vrijheid betekent dat medewerkers de autonomie hebben op hun eigen werk vorm te geven. Ze bepalen zelf wanneer ze wat doen en op welke manier. Ook is er vrijheid om eigen projecten op te pakken, ideeën uit te voeren en op eigen initiatief informatie te verzamelen en te delen.',
@@ -44,11 +43,9 @@ export default function Vragenlijst() {
   const HuidigeVraag = vragen[huidig]
 
   return (
-    <main className='min-w-full bg-linear-to-b from-orange-400 via-[#DECAB7] to-blue-900'>
       <div>
         <div className="ml-6.5 mr-4.5 mt-4 px-2 md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
           <div className="p-1 text-center">
-            <h1 className="text-6xl font-bold pb-8 pl-3">{onderwerpen[huidig]}</h1>
           </div>
           <div className="flex md:ml-25 my-auto mx-auto items-center gap-5">
             <div className="bg-blue-100 border-2 border-grey-500 shadow-xl/40 w-5/9 h-full pt-[2%] pb-[10%] rounded-lg p-3 mb-4">
@@ -81,6 +78,5 @@ export default function Vragenlijst() {
 
         </div>
       </div>
-    </main>
   )
 }

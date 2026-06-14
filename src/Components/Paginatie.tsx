@@ -14,38 +14,44 @@ export default function Paginatie() {
 
   return (
     <div className="flex flex-col gap-2 bg-transparent border-2 border-blue-900 rounded-md md:border-transparent">
-      <div className="flex gap-1 flex-col flex-nowrap items-center justify-center">
+      <div className="flex flex-col items-center justify-center gap-1">
+
         <button
           onClick={() => setHuidig(huidig - 1)}
           disabled={huidig === 0}
-          className="px-2 py-1 text-sm md h-10 md:w-10 md:text-lg border-3 bg-white border-blue-900 rounded-md disabled:opacity-30 cursor-pointer"
+          className="h-10 w-10 rounded-md border-2 border-blue-900 bg-white text-lg disabled:opacity-30 cursor-pointer"
         >
           ←
         </button>
 
-        {Array.from({ length: TOTAAL }, (_, i) => {
-          const isCurrent = huidig === i
 
-          if (!visibleOnMobile(i)) {
-            const showDotsLeft = i === huidig - 2
-            const showDotsRight = i === huidig + 2
+        <div className="flex flex-col gap-1 md:hidden">
+          {Array.from({ length: TOTAAL }, (_, i) => {
+            const isCurrent = huidig === i
 
-            if (showDotsLeft || showDotsRight) {
-              return (
-                <span
-                  key={`dots-${i}`}
-                  className="md:hidden flex items-center px-1 text-sm font-bold"
-                >
-                  ...
-                </span>
-              )
+            if (!visibleOnMobile(i)) {
+              const showDots =
+                i === huidig - 2 || i === huidig + 2
+
+              if (showDots) {
+                return (
+                  <span
+                    key={`dots-${i}`}
+                    className="flex items-center justify-center h-8 text-sm font-bold"
+                  >
+                    ...
+                  </span>
+                )
+              }
+
+              return null
             }
 
             return (
               <button
                 key={i}
                 onClick={() => setHuidig(i)}
-                className={`hidden md:block h-10 w-10 rounded-md border-2 border-blue-900 cursor-pointer ${
+                className={`h-8 min-w-8 rounded-md border-2 border-blue-900 text-sm cursor-pointer ${
                   isCurrent
                     ? 'bg-[#DECAB7] text-orange-800'
                     : 'bg-white text-black'
@@ -54,43 +60,48 @@ export default function Paginatie() {
                 {i + 1}
               </button>
             )
-          }
+          })}
+        </div>
 
-          return (
-            <button
-              key={i}
-              onClick={() => setHuidig(i)}
-              className={`text-sm px-2 py-1 md:h-10 md:w-10 md:text-lg rounded-md border-2 border-blue-900 cursor-pointer ${
-                isCurrent
-                  ? 'bg-[#DECAB7] text-orange-800'
-                  : 'bg-white text-black'
-              }`}
-            >
-              {i + 1}
-            </button>
-          )
-        })}
+        <div className="hidden md:flex md:flex-col gap-1">
+          {Array.from({ length: TOTAAL }, (_, i) => {
+            const isCurrent = huidig === i
+
+            return (
+              <button
+                key={i}
+                onClick={() => setHuidig(i)}
+                className={`h-10 w-10 rounded-md border-2 border-blue-900 text-lg cursor-pointer ${
+                  isCurrent
+                    ? 'bg-[#DECAB7] text-orange-800'
+                    : 'bg-white text-black'
+                }`}
+              >
+                {i + 1}
+              </button>
+            )
+          })}
+        </div>
 
         <button
           onClick={() => setHuidig(huidig + 1)}
           disabled={huidig === TOTAAL - 1}
-          className="px-2 py-1 text-sm md:h-10 md:w-10 md:text-lg border-3 bg-white border-blue-900 rounded-md disabled:opacity-30 cursor-pointer"
+          className="h-10 w-10 rounded-md border-2 border-blue-900 bg-white text-lg disabled:opacity-30 cursor-pointer"
         >
           →
         </button>
       </div>
-
       <div>
-        <div className="flex text-center justify-between text-[9px] md:text-xl md: text-gray-800 mb-1">
-          <span className="md:hidden block">Voortgang</span>
+        <div className="mb-1 flex justify-between text-[9px] md:text-xl text-gray-800">
+          <span className="md:hidden">Voortgang</span>
           <span>
             {huidig + 1} / {TOTAAL}
           </span>
         </div>
 
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-2 overflow-hidden rounded-full bg-gray-200">
           <div
-            className="h-full bg-orange-700 rounded-full transition-all duration-300"
+            className="h-full rounded-full bg-orange-700 transition-all duration-300"
             style={{
               width: `${((huidig + 1) / TOTAAL) * 100}%`,
             }}
@@ -101,7 +112,7 @@ export default function Paginatie() {
       {huidig === TOTAAL - 1 && (
         <button
           onClick={() => navigate('/resultaten')}
-          className="min-w-full mr md:max-w-[80%] text-sm md:mt-1 md:text-lg border-3 border-blue-900 rounded-md bg-orange-200 text-orange-900 cursor-pointer"
+          className="w-full rounded-md border-2 border-blue-900 bg-orange-200 py-2 text-sm text-orange-900 cursor-pointer md:text-lg"
         >
           Send ✓
         </button>
