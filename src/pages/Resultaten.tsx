@@ -8,17 +8,12 @@ export default function RESULTATEN() {
       <h1 className="ml-16 text-4xl font-bold">
         Resultaten
       </h1>
-      <p className="text-center text-lg max-w-9/10 mx-auto">
+      <p className="text-center text-lg w-full mx-auto">
         Op basis van jouw antwoorden hebben we een overzicht gemaakt van de sterke punten en ontwikkelpunten binnen jouw team. Door met de muis over deze overizchten te bewegen of door op de overzichten te klikken krijg je de resultaten te zien van jouw team en de gemiddelde resultaten van alle teams die de vragenlijst hebben ingevuld. Deze inzichten kunnen je helpen om te begrijpen waar jullie als team goed in zijn en waar nog ruimte is voor groei en verbetering.
       </p>
-      <div className="md:flex md:w-9/10 mx-auto w-full mt-10 p-6 border-2 border-blue-900 bg-blue-50 rounded-lg">
+      <div className="md:flex mx-auto w-full mt-10">
         <div className="flex-1 flex-col gap-6">
-         <p className="hidden md:block text-center text-2xl font-bold">Het gemiddelde van jouw team</p>
         <Resultaten_Cirkel />   
-        </div>
-        <div className="hidden md:block flex-1 flex-col gap-6">
-        <p className="hidden md:block text-center text-2xl font-bold">Het gemiddelde van alle teams</p>
-        <Resultaten_Cirkel />
         </div>
       </div>
       

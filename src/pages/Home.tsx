@@ -4,8 +4,8 @@ import Start_Afbeelding from '../Components/Start_Afbeelding'
 export default function Home() {
   return (
     <div className="px-6 md:px-10 pt-6">
-      <div className="min-h-[calc(100vh-70px)] border-2 border-blue-900 bg-linear-to-r from-gray-300 via-white to-white rounded-lg">
-        <div className="ml-4 flex flex-col gap-2 p-3">
+      <div className="min-h-[calc(100vh-70px)] shadow-[-20px_0_70px_rgba(0,0,0,0.4)] border-2 border-blue-900 bg-linear-to-r from-transparent via-white to-white rounded-lg">
+        <div className="ml-7 flex flex-col gap-2 p-3">
           <div className="flex-1 md:max-w-1/2">
             <h1 className="text-4xl font-bold mb-5 md:max-w-2/3">
               Innovatief Vermogen binnen Deltion College
