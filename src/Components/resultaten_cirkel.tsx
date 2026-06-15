@@ -316,7 +316,6 @@ export default function RESULTATEN() {
           </div>
         </div>
       </div>
-
     </div>
   )
 }
