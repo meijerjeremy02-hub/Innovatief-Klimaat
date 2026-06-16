@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import InnovatieKlimaatPdf from './InnovatieKlimaatPdf'
 
 const dims = [
   { id: 1,  label: 'Vrijheid',                 short: 'Vrijheid',          dark: false },
@@ -90,7 +92,7 @@ function Resultaten_Cirkel({ scores, hovered, setHovered, title }: CirkelProps) 
           })}
         </g>
 
-        {/* Schaalgetallen (Nu ACHTER de gekleurde slices geplaatst) */}
+        {/* Schaalgetallen */}
         <g className="select-none pointer-events-none">
           {gridScores.map((gScore) => {
             const r = dIr + ((dMaxOr - dIr) * gScore) / 25
@@ -166,7 +168,7 @@ function Resultaten_Cirkel({ scores, hovered, setHovered, title }: CirkelProps) 
         {/* Witte kern */}
         <circle cx={dCx} cy={dCy} r={dIr - 2} fill="white" />
 
-        {/* Middentekst (blijft altijd bovenop) */}
+        {/* Middentekst */}
         {hovered !== null ? (
           <>
             <text
@@ -228,11 +230,33 @@ export default function RESULTATEN() {
   return (
     <div className="w-full h-full bg-transparent p-4">
       
-      {/* LAPTOP LAYOUT */}
       <div className="hidden md:flex flex-col items-center justify-center w-full max-w-9/10 mx-auto p-6 border-2 border-blue-900 bg-blue-50 rounded-lg shadow-md gap-4">
         <div className="flex bg-slate-200 p-1 rounded-xl shadow-inner w-64 border border-slate-300">
           <button onClick={() => setViewMode('team')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'team' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>Jouw team</button>
           <button onClick={() => setViewMode('college')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'college' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>College-wijd</button>
+        </div>
+
+        {/* Dynamische PDF downloadlink */}
+        <div className="mt-2">
+          <PDFDownloadLink
+            document={
+              <InnovatieKlimaatPdf 
+                personal={personalScores} 
+                team={teamScores} 
+                college={collegeScores} 
+              />
+            }
+            fileName="Mijn_Innovatieklimaat_Rapport.pdf"
+          >
+            {({ loading }) => (
+              <button 
+                className="px-5 py-2 bg-[#7B77A8] hover:bg-[#5B5899] text-white text-sm font-bold rounded-xl shadow transition-all duration-200"
+                disabled={loading}
+              >
+                {loading ? 'Rapport opbouwen...' : 'Download Resultaten (PDF)'}
+              </button>
+            )}
+          </PDFDownloadLink>
         </div>
 
         <div className="flex w-full gap-8 justify-center items-center mt-2">
@@ -241,7 +265,7 @@ export default function RESULTATEN() {
         </div>
       </div>
 
-      {/* MOBIEL LAYOUT */}
+      {/* Mobiele weergave */}
       <div className="flex md:hidden w-full max-w-md mx-auto flex-col justify-between bg-[#F8FAFC] font-sans text-[#1E254C] relative overflow-hidden select-none rounded-[40px] shadow-2xl border border-slate-100">
         <div className="text-center my-6 p-4 mx-6 bg-white border border-gray-200 rounded-3xl shadow-lg">
           <p className="text-purple-600 font-bold text-xs tracking-widest uppercase">Dimensie {dims[activeIndex].id} van {dims.length}</p>
