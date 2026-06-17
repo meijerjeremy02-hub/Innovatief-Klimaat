@@ -44,17 +44,17 @@ export default function Vragenlijst() {
 
   return (
       <div>
-        <div className="ml-6.5 mr-4.5 mt-4 px-2 md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
+        <div className="mt-[3%] ml-17 mr-[1%] md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
           <div className="p-1 text-center">
           </div>
-          <div className="flex my-auto mx-10 items-center gap-3">
+          <div className="flex flex-col-reverse md:flex-row my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3">
             <div className="bg-blue-100 border-2 border-grey-500 shadow-xl/40 w-full h-full pt-[2%] pb-[10%] rounded-lg p-3 mb-4">
-              <p className="text-lg text-grey-700">{uitleg[huidig]}</p>
+              <p className="md:text-lg text-sm md:text-left text-center text-grey-700">{uitleg[huidig]}</p>
             </div>
-            <img src={cirkels[huidig]} alt="Cirkel" className="w-5/9 mx-auto mb-4 object-contain" />
+            <img src={cirkels[huidig]} alt="Cirkel" className="md:w-5/9 w-full mx-auto mb-4 object-contain" />
           </div>
 
-          <div className="md:px-[5%]">
+          <div className="md:px-[5%] px-[4%]">
             <HuidigeVraag />
           </div>
 

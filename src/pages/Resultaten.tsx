@@ -19,7 +19,7 @@ export default function RESULTATEN() {
       
       <Link
         to="/"
-        className="mt-4 mx-auto text-lg max-w-xs inline-block text-center bg-orange-400 border-2 border-blue-900 rounded-lg text-white px-5 py-4 transition-colors hover:bg-orange-500"
+        className="mt-4 w-3/5 text-lg mx-auto inline-block text-center bg-orange-400 border-2 border-blue-900 rounded-lg text-white px-5 py-4 transition-colors hover:bg-orange-500"
       >
         Terug naar home
       </Link>

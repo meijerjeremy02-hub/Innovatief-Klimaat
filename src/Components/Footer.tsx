@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <div className="fixed bottom-0 left-0 right-0 p-1 pointer-events-none z-50">
       <div className={`bg-orange-400 border-3 border-blue-900 border-l-0 rounded-r-md h-6 flex items-center justify-end pr-3 transition-all duration-600 ${
-        isVragenlijst ? "ml-19.25 bg-orange-400 border-3 border-blue-900 border-l-0 rounded-r-md h-6 flex items-center justify-end pr-3" : "ml-3.25 bg-orange-400 border-3 border-blue-900 border-l-0 rounded-r-md h-6 flex items-center justify-end pr-3"
+        isVragenlijst ? "md:ml-19.25 ml-14.25 bg-orange-400 border-3 border-blue-900 border-l-0 rounded-r-md h-6 flex items-center justify-end pr-3" : "ml-3.25 bg-orange-400 border-3 border-blue-900 border-l-0 rounded-r-md h-6 flex items-center justify-end pr-3"
       }`}>
         <img src={DeltionLogo} alt="Deltion logo" className="h-4 md:h-5 pointer-events-auto" />
       </div>
