@@ -44,7 +44,7 @@ export default function Vragenlijst() {
 
   return (
       <div>
-        <div className="mt-[3%] ml-17 mr-[1%] md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
+        <div className="mt-[3%] ml-17 mr-[1%] mb-8 md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
           <div className="p-1 text-center">
           </div>
           <div className="flex flex-col-reverse md:flex-row my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3">
