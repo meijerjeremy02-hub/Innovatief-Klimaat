@@ -337,9 +337,30 @@ export default function RESULTATEN() {
                 <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === activeIndex ? 'w-4 bg-[#7B77A8]' : 'w-1.5 bg-slate-200'}`} />
               ))}
             </div>
+              <div className="mt-10">
+          <PDFDownloadLink
+            document={
+              <InnovatieKlimaatPdf 
+                personal={personalScores} 
+                team={teamScores} 
+                college={collegeScores} 
+              />
+            }
+            fileName="Mijn_Innovatieklimaat_Rapport.pdf"
+          >
+            {({ loading }) => (
+              <button 
+                className="px-5 py-2 bg-[#7B77A8] hover:bg-[#5B5899] text-white text-sm font-bold rounded-xl shadow transition-all duration-200"
+                disabled={loading}
+              >
+                {loading ? 'Rapport opbouwen...' : 'Download Resultaten (PDF)'}
+              </button>
+            )}
+          </PDFDownloadLink>
+        </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
   )
 }
