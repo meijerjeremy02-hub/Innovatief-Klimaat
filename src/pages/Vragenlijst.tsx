@@ -42,11 +42,32 @@ export default function Vragenlijst() {
   const navigate = useNavigate()
   const HuidigeVraag = vragen[huidig]
 
+  const spreekTekst = (tekst: string) => {
+  window.speechSynthesis.cancel()
+
+  const spraak = new SpeechSynthesisUtterance(tekst)
+  spraak.lang = 'nl-NL'
+  spraak.rate = 1
+  spraak.pitch = 1
+
+  window.speechSynthesis.speak(spraak)
+}
+
   return (
       <div>
         <div className="mt-[3%] ml-17 mr-[1%] mb-8 md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
           <div className="p-1 text-center">
           </div>
+          <div className="md:px-[5%] px-[4%]">
+
+      <button
+    onClick={() => spreekTekst(uitleg[huidig])}
+    className="flex bg-blue-900 text-white px-10 py-2 rounded-lg hover:bg-blue-800 cursor-pointer mb-1"
+  >
+    🔊 Voorlezen
+  </button>
+
+</div>
           <div className="flex flex-col-reverse md:flex-row my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3">
             <div className="bg-blue-100 border-2 border-grey-500 shadow-xl/40 w-full h-full pt-[2%] pb-[10%] rounded-lg p-3 mb-4">
               <p className="md:text-lg text-sm md:text-left text-center text-grey-700">{uitleg[huidig]}</p>
