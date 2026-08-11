@@ -48,71 +48,75 @@ export default function Vragenlijst() {
   const HuidigeVraag = vragen[huidig]
 
   const spreekTekst = (tekst: string) => {
-  window.speechSynthesis.cancel()
+    window.speechSynthesis.cancel()
 
-  const spraak = new SpeechSynthesisUtterance(tekst)
-  spraak.lang = 'nl-NL'
-  spraak.rate = 1
-  spraak.pitch = 1
+    const spraak = new SpeechSynthesisUtterance(tekst)
+    spraak.lang = 'nl-NL'
+    spraak.rate = 1
+    spraak.pitch = 1
 
-  window.speechSynthesis.speak(spraak)
-}
+    window.speechSynthesis.speak(spraak)
+  }
 
   return (
-      <div>
-        <div className="mt-[3%] ml-17 mr-[1%] mb-8 md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
-          <div className="p-1 text-center">
+    <div id="top" className="min-h-dvh w-full overflow-x-hidden">
+      <div className="mt-[3%] px-4 mb-8 md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 md:px-5 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
+        <div className="p-1 text-center"></div>
+
+        <div className="md:px-[5%] px-[2%]">
+          <button
+            onClick={() => spreekTekst(uitleg[huidig])}
+            className="flex bg-blue-900 text-white px-10 py-2 rounded-lg hover:bg-blue-800 cursor-pointer mb-1"
+          >
+            🔊 Voorlezen
+          </button>
+        </div>
+
+        <div className="flex flex-col-reverse md:flex-row my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3">
+          <div className="bg-blue-100 border-2 border-blue-900 shadow-xl/40 w-full h-full pt-[2%] pb-[10%] rounded-lg p-3 mb-4">
+            <p className="md:text-lg text-sm md:text-left text-center text-gray-700">{uitleg[huidig]}</p>
           </div>
-          <div className="md:px-[5%] px-[4%]">
-
-      <button
-    onClick={() => spreekTekst(uitleg[huidig])}
-    className="flex bg-blue-900 text-white px-10 py-2 rounded-lg hover:bg-blue-800 cursor-pointer mb-1"
-  >
-    🔊 Voorlezen
-  </button>
-
-</div>
-          <div className="flex flex-col-reverse md:flex-row my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3">
-            <div className="bg-blue-100 border-2 border-grey-500 shadow-xl/40 w-full h-full pt-[2%] pb-[10%] rounded-lg p-3 mb-4">
-              <p className="md:text-lg text-sm md:text-left text-center text-grey-700">{uitleg[huidig]}</p>
-            </div>
-            <img src={cirkels[huidig]} alt="Cirkel" className="md:w-5/9 w-full mx-auto mb-4 object-contain" />
+          <div className="w-full flex items-center justify-center bg-white p-4 md:bg-transparent md:p-0 mb-4">
+            <img
+              src={cirkels[huidig]}
+              alt="Cirkel"
+              className="md:w-5/9 w-3/4 mx-auto object-contain"
+            />
           </div>
+        </div>
 
-          <div className="md:px-[5%] px-[4%]">
-            <HuidigeVraag />
+        <div className="md:px-[5%] px-[2%]">
+          <HuidigeVraag />
+        </div>
+
+        <div className="px-4 md:px-10 mt-6">
+          <div className="flex mx-auto mb-10 gap-5 justify-center">
+            <button
+              onClick={() => {
+                setHuidig(huidig - 1)
+                document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+              }}
+              disabled={huidig === 0}
+              className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 disabled:opacity-30 cursor-pointer"
+            >
+              Vorige
+            </button>
+            <button
+              onClick={() => {
+                if (huidig === 9) {
+                  navigate('/resultaten')
+                } else {
+                  setHuidig(huidig + 1)
+                }
+                document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+              }}
+              className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 cursor-pointer"
+            >
+              {huidig === 9 ? 'Verstuur' : 'Volgende'}
+            </button>
           </div>
-
-          <div className="px-10 mt-6">
-            <div className="flex mx-auto mb-10 gap-5 justify-center">
-              <button
-                onClick={() => {
-                  setHuidig(huidig - 1)
-                  document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
-                }}
-                disabled={huidig === 0}
-                className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 disabled:opacity-30 cursor-pointer"
-              >
-                Vorige
-              </button>
-              <button
-                onClick={() => {
-                  if (huidig === 9) {
-                    navigate('/resultaten')
-                  } else {
-                    setHuidig(huidig + 1)
-                  }
-                  document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
-                }}
-                className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 cursor-pointer"
-              >
-                {huidig === 9 ? 'Verstuur' : 'Volgende'}
-              </button>
-            </div>
-          </div>
-
         </div>
       </div>
+    </div>
   )
 }
