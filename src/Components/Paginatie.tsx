@@ -9,17 +9,17 @@ export default function Paginatie() {
 
   return (
     <div className="flex flex-col gap-3 pb-1 bg-transparent md:w-full border-2 border-blue-900 rounded-md md:border-transparent">
-      <div className="flex flex-col w-full items-center justify-center gap-3">
+      <div className="flex flex-col [@media(max-width:767px)_and_(orientation:landscape)]:flex-row md:flex-col w-full items-center justify-center gap-3">
 
         <button
           onClick={() => setHuidig(huidig - 1)}
           disabled={huidig === 0}
-          className="h-8 w-8 md:h-10 md:w-10 rounded-md border-2 border-blue-900 bg-white text-base md:text-lg disabled:opacity-30 cursor-pointer"
+          className="h-8 w-8 md:h-10 md:w-10 shrink-0 rounded-md border-2 border-blue-900 bg-white text-base md:text-lg disabled:opacity-30 cursor-pointer"
         >
           ←
         </button>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col [@media(max-width:767px)_and_(orientation:landscape)]:flex-row md:flex-col gap-2 [@media(max-width:767px)_and_(orientation:landscape)]:overflow-x-auto [@media(max-width:767px)_and_(orientation:landscape)]:max-w-[70vw]">
           {Array.from({ length: TOTAAL }, (_, i) => {
             const isCurrent = huidig === i
 
@@ -27,7 +27,7 @@ export default function Paginatie() {
               <button
                 key={i}
                 onClick={() => setHuidig(i)}
-                className={`h-8 w-8 md:h-10 md:w-10 rounded-md border-2 border-blue-900 text-sm md:text-lg cursor-pointer ${
+                className={`h-8 w-8 md:h-10 md:w-10 shrink-0 rounded-md border-2 border-blue-900 text-sm md:text-lg cursor-pointer ${
                   isCurrent
                     ? 'bg-[#DECAB7] text-orange-800'
                     : 'bg-white text-black'
@@ -42,7 +42,7 @@ export default function Paginatie() {
         <button
           onClick={() => setHuidig(huidig + 1)}
           disabled={huidig === TOTAAL - 1}
-          className="h-8 w-8 md:h-10 md:w-10 rounded-md border-2 border-blue-900 bg-white text-base md:text-lg disabled:opacity-30 cursor-pointer"
+          className="h-8 w-8 md:h-10 md:w-10 shrink-0 rounded-md border-2 border-blue-900 bg-white text-base md:text-lg disabled:opacity-30 cursor-pointer"
         >
           →
         </button>
