@@ -9,7 +9,7 @@ export default function Paginatie() {
 
   return (
     <div className="flex flex-col gap-3 pb-1 bg-transparent md:w-full border-2 border-blue-900 rounded-md md:border-transparent">
-      <div className="flex flex-col [@media(max-width:767px)_and_(orientation:landscape)]:flex-row md:flex-col w-full items-center justify-center gap-3">
+      <div className="flex flex-col w-full items-center justify-center gap-3">
 
         <button
           onClick={() => setHuidig(huidig - 1)}
@@ -19,7 +19,7 @@ export default function Paginatie() {
           ←
         </button>
 
-        <div className="flex flex-col [@media(max-width:767px)_and_(orientation:landscape)]:flex-row md:flex-col gap-2 [@media(max-width:767px)_and_(orientation:landscape)]:overflow-x-auto [@media(max-width:767px)_and_(orientation:landscape)]:max-w-[70vw]">
+        <div className="flex flex-col gap-2 overflow-y-auto max-h-[45dvh] md:max-h-none">
           {Array.from({ length: TOTAAL }, (_, i) => {
             const isCurrent = huidig === i
 
