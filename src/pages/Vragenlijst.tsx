@@ -82,14 +82,24 @@ export default function Vragenlijst() {
           <div className="px-10 mt-6">
             <div className="flex mx-auto mb-10 gap-5 justify-center">
               <button
-                onClick={() => setHuidig(huidig - 1)}
+                onClick={() => {
+                  setHuidig(huidig - 1)
+                  document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+                }}
                 disabled={huidig === 0}
                 className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 disabled:opacity-30 cursor-pointer"
               >
                 Vorige
               </button>
               <button
-                onClick={() => huidig === 9 ? navigate('/resultaten') : setHuidig(huidig + 1)}
+                onClick={() => {
+                  if (huidig === 9) {
+                    navigate('/resultaten')
+                  } else {
+                    setHuidig(huidig + 1)
+                  }
+                  document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+                }}
                 className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 cursor-pointer"
               >
                 {huidig === 9 ? 'Verstuur' : 'Volgende'}

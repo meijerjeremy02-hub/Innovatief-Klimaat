@@ -5,6 +5,7 @@ import Orange_Balk from '../Components/Oranje_Balk'
 export default function MainLayout() {
   return (
     <main className="min-h-dvh bg-linear-to-b from-orange-400 via-[#DECAB7] to-blue-900 overflow-x-hidden">
+      <div className="anchor top-0" id="top"></div>
       <Orange_Balk/>
       <Outlet />
       <Footer />

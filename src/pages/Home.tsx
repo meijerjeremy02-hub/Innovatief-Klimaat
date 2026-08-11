@@ -101,6 +101,7 @@ export default function Home() {
         </div>
         <div className="px-10 py-[3%]">
           <Link
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             to="/vragenlijst"
             className="inline-block rounded-lg border-2 border-blue-900 bg-orange-400 px-6 py-3 text-4xl text-white transition-colors hover:bg-orange-500"
           >
