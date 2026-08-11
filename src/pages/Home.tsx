@@ -11,7 +11,7 @@ export default function Home() {
     <div className="flex flex-col items-center pl-6 max-w-29/30 mb-5 lg:px-12 py-3 min-h-dvh md:flex-1 md:min-h-0">
 
       {/* Mobiele versie: effen witte achtergrond */}
-      <div className="h-full border-3 border-blue-900 rounded-lg bg-linear-to-b from-blue-300 via-blue-100 to-white shadow-[-20px_0_70px_rgba(0,0,0,0.4)] flex flex-col sm:hidden">
+      <div className="h-full border-3 border-blue-900 rounded-lg bg-linear-to-b from-blue-200 via-white to-white shadow-[-20px_0_70px_rgba(0,0,0,0.4)] flex flex-col sm:hidden">
         <div className="flex-1 p-4 flex flex-col">
           <h1 className="text-2xl font-extrabold mb-3 max-w-9/10">
             Innovatief Vermogen binnen Deltion College
