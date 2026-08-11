@@ -72,7 +72,7 @@ export default function Vragenlijst() {
           </button>
         </div>
 
-        <div className="flex flex-col-reverse md:flex-row [@media(max-height:500px)]:!flex-col-reverse my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3">
+        <div className="flex flex-col-reverse md:flex-row [@media(max-height:500px)]:flex-col-reverse! my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3">
           <div className="bg-blue-100 border-2 border-blue-900 shadow-xl/40 w-full h-full pt-[2%] pb-[10%] rounded-lg p-3 mb-4">
             <p className="md:text-lg text-sm md:text-left text-center text-gray-700">{uitleg[huidig]}</p>
           </div>
@@ -80,7 +80,7 @@ export default function Vragenlijst() {
             <img
               src={cirkels[huidig]}
               alt="Cirkel"
-              className="md:w-5/9 w-3/4 [@media(max-height:500px)]:!w-1/2 mx-auto object-contain"
+              className="md:w-5/9 w-3/4 [@media(max-height:500px)]:w-1/2! mx-auto object-contain"
             />
           </div>
         </div>
