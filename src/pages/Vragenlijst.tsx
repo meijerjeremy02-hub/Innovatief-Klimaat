@@ -20,6 +20,7 @@ import Cirkelv7 from '../images/Foto7.png'
 import Cirkelv8 from '../images/Foto8.png'
 import Cirkelv9 from '../images/Foto9.png'
 import Cirkelv10 from '../images/Foto10.png'
+import { useEffect } from 'react'
 
 const vragen = [Vragen1, Vragen2, Vragen3, Vragen4, Vragen5, Vragen6, Vragen7, Vragen8, Vragen9, Vragen10]
 const cirkels = [Cirkelv1, Cirkelv2, Cirkelv3, Cirkelv4, Cirkelv5, Cirkelv6, Cirkelv7, Cirkelv8, Cirkelv9, Cirkelv10]
@@ -38,6 +39,10 @@ const uitleg = [
 ]
 
 export default function Vragenlijst() {
+  useEffect(() => {
+    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+  }, []);
+
   const { huidig, setHuidig } = useVragen()
   const navigate = useNavigate()
   const HuidigeVraag = vragen[huidig]

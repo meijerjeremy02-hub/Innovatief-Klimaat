@@ -1,7 +1,12 @@
 import { Link } from 'react-router'
 import Start_Afbeelding from '../Components/Start_Afbeelding'
-
+import { useEffect } from 'react'
 export default function Home() {
+
+  useEffect(() => {
+    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+  }, []);
+
   return (
     <div className="flex flex-col items-center pl-6 max-w-29/30 mb-5 lg:px-12 py-3 min-h-dvh md:flex-1 md:min-h-0">
 

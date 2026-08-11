@@ -1,7 +1,12 @@
 import { Link } from 'react-router'
 import Resultaten_Cirkel from '../Components/resultaten_cirkel'
+import { useEffect } from 'react'
 
 export default function RESULTATEN() {
+  useEffect(() => {
+    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+  }, []);
+  
   return (
   <div className="flex flex-col flex-1 mt-10 border-2 border-blue-900  bg-white rounded-lg mb-15 ml-6 md:ml-10 md:mr-10">
     <div className="flex flex-col p-1.5 md:p-5 min-h-screen text-center w-full gap-6">
