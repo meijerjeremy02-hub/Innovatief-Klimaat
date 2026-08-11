@@ -19,14 +19,14 @@ export default function Home() {
           <div className="flex flex-1 flex-col gap-6 items-center">
             <div className="flex flex-col flex-1 justify-between">
               <div className="space-y-4">
-                <p className="text-md leading-relaxed">
+                <p className="text-md leading-tight">
                   Binnen het Deltion College zien we innovatie als het resultaat
                   van samenspel tussen verschillende kapitalen, waarbij het
                   sociaal kapitaal een belangrijke motor is. Geen budget, uren
                   of roadmap weegt op tegen de manier waarop teams samen
                   beweging creëren (Gaspersz, 2026).
                 </p>
-                <p className="text-md leading-relaxed">
+                <p className="text-md leading-tight">
                   De innovatiescan, ontwikkeld binnen het programma Innovatieve
                   Omgeving, helpt teams inzicht te krijgen op tien dimensies
                   (Ekvall, 2016) die van invloed zijn op het innovatief vermogen
@@ -35,7 +35,7 @@ export default function Home() {
                   open gesprek om tot concrete acties en gedeeld eigenaarschap
                   te komen.
                 </p>
-                <p className="text-md leading-relaxed">
+                <p className="text-md leading-tight">
                   Zo kan men samen bouwen aan het innovatief vermogen van het
                   team en daarbij ook die van heel het Deltion.
                 </p>
@@ -65,20 +65,20 @@ export default function Home() {
       {/* Desktop versie: gradient achtergrond */}
       <div className="hidden sm:flex pb-[3%] flex-1 min-h-0 border-2 border-blue-900 rounded-lg bg-linear-to-r from-transparent via-white to-white shadow-[-20px_0_70px_rgba(0,0,0,0.4)] flex-col">
         <div className="flex-1 p-6 flex flex-col">
-          <h1 className="text-3xl xl:text-4xl font-bold mb-4 max-w-3xl">
+          <h1 className="text-3xl xl:text-4xl font-bold mb-7 max-w-3xl">
             Innovatief Vermogen binnen Deltion College
           </h1>
           <div className="flex flex-1 flex-row gap-6 items-start">
             <div className="flex flex-col flex-1 justify-between">
-              <div className="space-y-4">
-                <p className="text-lg xl:text-xl leading-relaxed">
+              <div className="space-y-5">
+                <p className="text-lg xl:text-xl leading-tight">
                   Binnen het Deltion College zien we innovatie als het resultaat
                   van samenspel tussen verschillende kapitalen, waarbij het
                   sociaal kapitaal een belangrijke motor is. Geen budget, uren
                   of roadmap weegt op tegen de manier waarop teams samen
                   beweging creëren (Gaspersz, 2026).
                 </p>
-                <p className="text-lg xl:text-xl leading-relaxed">
+                <p className="text-lg xl:text-xl leading-tight">
                   De innovatiescan, ontwikkeld binnen het programma Innovatieve
                   Omgeving, helpt teams inzicht te krijgen op tien dimensies
                   (Ekvall, 2016) die van invloed zijn op het innovatief vermogen
@@ -87,8 +87,8 @@ export default function Home() {
                   open gesprek om tot concrete acties en gedeeld eigenaarschap
                   te komen.
                 </p>
-                <p className="text-lg xl:text-xl leading-relaxed">
-                  Zo kan men samen bouwen aan het innovatief vermogen van het
+                <p className="text-lg xl:text-xl leading-tight">
+                  Zo can men samen bouwen aan het innovatief vermogen van het
                   team en daarbij ook die van heel het Deltion.
                 </p>
               </div>
