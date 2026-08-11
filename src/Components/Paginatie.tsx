@@ -19,7 +19,7 @@ export default function Paginatie() {
           ←
         </button>
 
-        <div className="flex flex-col gap-2 [@media(max-height:500px)]:overflow-y-auto [@media(max-height:500px)]:max-h-[70dvh]">
+        <div className="flex flex-col gap-2">
           {Array.from({ length: TOTAAL }, (_, i) => {
             const isCurrent = huidig === i
 
