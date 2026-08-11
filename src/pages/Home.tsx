@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 export default function Home() {
 
   useEffect(() => {
-    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+    window.scrollTo(0, 0);
   }, []);
 
   return (
