@@ -199,6 +199,37 @@ function Resultaten_Cirkel({ scores, hovered, setHovered, title }: CirkelProps) 
   )
 }
 
+function DraaiTelefoonHint() {
+  return (
+    <div className="flex md:hidden flex-col items-center justify-center gap-2 py-3">
+      <style>{`
+        @keyframes draaiTelefoon {
+          0%   { transform: rotate(0deg); }
+          25%  { transform: rotate(-90deg); }
+          60%  { transform: rotate(-90deg); }
+          85%  { transform: rotate(0deg); }
+          100% { transform: rotate(0deg); }
+        }
+      `}</style>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#7B77A8"
+        strokeWidth={1.8}
+        className="w-8 h-8"
+        style={{ animation: 'draaiTelefoon 2.5s ease-in-out infinite' }}
+      >
+        <rect x="7" y="2" width="10" height="20" rx="2" />
+        <line x1="11" y1="18" x2="13" y2="18" strokeLinecap="round" />
+      </svg>
+      <p className="text-xs text-gray-500 font-medium text-center">
+        Draai je telefoon voor een beter overzicht
+      </p>
+    </div>
+  )
+}
+
 export default function RESULTATEN() {
   const [hoveredPersonal, setHoveredPersonal] = useState<number | null>(null)
   const [hoveredSwitch, setHoveredSwitch] = useState<number | null>(null)
@@ -267,6 +298,8 @@ export default function RESULTATEN() {
 
       {/* Mobiele weergave */}
       <div className="flex md:hidden w-full max-w-md mx-auto flex-col justify-between bg-[#F8FAFC] font-sans text-[#1E254C] relative overflow-hidden select-none rounded-[40px] shadow-2xl border border-slate-100">
+        <DraaiTelefoonHint />
+
         <div className="text-center my-6 p-4 mx-6 bg-white border border-gray-200 rounded-3xl shadow-lg">
           <p className="text-purple-600 font-bold text-xs tracking-widest uppercase">Dimensie {dims[activeIndex].id} van {dims.length}</p>
           <h4 className="text-xl font-black mt-1 text-[#1E254C] tracking-tight">{dims[activeIndex].label.replace('\n', ' ')}</h4>
