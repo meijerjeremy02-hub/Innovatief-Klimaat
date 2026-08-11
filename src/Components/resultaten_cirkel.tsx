@@ -242,11 +242,11 @@ export default function RESULTATEN() {
 
       <style>{`
         @keyframes schijfDraaiNext {
-          from { transform: rotate(-16deg); }
+          from { transform: rotate(-28deg); }
           to   { transform: rotate(0deg); }
         }
         @keyframes schijfDraaiPrev {
-          from { transform: rotate(16deg); }
+          from { transform: rotate(28deg); }
           to   { transform: rotate(0deg); }
         }
       `}</style>
@@ -311,7 +311,7 @@ export default function RESULTATEN() {
                 key={spinKey}
                 style={{
                   transformOrigin: `${mCx}px ${mCy}px`,
-                  animation: `${spinDir === 'next' ? 'schijfDraaiNext' : 'schijfDraaiPrev'} 0.4s ease-out`,
+                  animation: `${spinDir === 'next' ? 'schijfDraaiNext' : 'schijfDraaiPrev'} 0.7s ease-out`,
                 }}
               >
                 {visiblePositions.map(({ dIndex, pos }) => {
