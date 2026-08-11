@@ -307,6 +307,17 @@ export default function RESULTATEN() {
 
           <div className="w-full relative z-0 -mb-24 transform translate-y-4 overflow-visible">
             <svg viewBox={`0 0 ${mWidth} ${mHeight}`} className="w-full overflow-visible">
+              {/* Volledige achtergrondring: geeft de illusie van een compleet wiel */}
+              <circle
+                cx={mCx}
+                cy={mCy}
+                r={(mIr + mOr) / 2}
+                fill="none"
+                stroke="#EDEBF7"
+                strokeWidth={mOr - mIr}
+                opacity={0.5}
+              />
+
               <g
                 key={spinKey}
                 style={{
