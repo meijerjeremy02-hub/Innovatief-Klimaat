@@ -199,49 +199,28 @@ function Resultaten_Cirkel({ scores, hovered, setHovered, title }: CirkelProps) 
   )
 }
 
-function DraaiTelefoonHint() {
-  return (
-    <div className="flex md:hidden flex-col items-center justify-center gap-2 py-3">
-      <style>{`
-        @keyframes draaiTelefoon {
-          0%   { transform: rotate(0deg); }
-          25%  { transform: rotate(-90deg); }
-          60%  { transform: rotate(-90deg); }
-          85%  { transform: rotate(0deg); }
-          100% { transform: rotate(0deg); }
-        }
-      `}</style>
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#7B77A8"
-        strokeWidth={1.8}
-        className="w-8 h-8"
-        style={{ animation: 'draaiTelefoon 2.5s ease-in-out infinite' }}
-      >
-        <rect x="7" y="2" width="10" height="20" rx="2" />
-        <line x1="11" y1="18" x2="13" y2="18" strokeLinecap="round" />
-      </svg>
-      <p className="text-xs text-gray-500 font-medium text-center">
-        Draai je telefoon voor een beter overzicht
-      </p>
-    </div>
-  )
-}
-
 export default function RESULTATEN() {
   const [hoveredPersonal, setHoveredPersonal] = useState<number | null>(null)
   const [hoveredSwitch, setHoveredSwitch] = useState<number | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const [viewMode, setViewMode] = useState<'team' | 'college'>('team')
+  const [spinKey, setSpinKey] = useState(0)
+  const [spinDir, setSpinDir] = useState<'next' | 'prev'>('next')
 
   const personalScores = [19, 16, 22, 14, 24, 18, 9, 20, 15, 22]
   const teamScores = [18, 15, 20, 12, 22, 17, 8, 19, 14, 21]
   const collegeScores = [15, 14, 17, 13, 19, 16, 11, 15, 13, 17]
 
-  const handlePrev = () => setActiveIndex((prev) => (prev === 0 ? dims.length - 1 : prev - 1))
-  const handleNext = () => setActiveIndex((prev) => (prev === dims.length - 1 ? 0 : prev + 1))
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev === 0 ? dims.length - 1 : prev - 1))
+    setSpinDir('prev')
+    setSpinKey((k) => k + 1)
+  }
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev === dims.length - 1 ? 0 : prev + 1))
+    setSpinDir('next')
+    setSpinKey((k) => k + 1)
+  }
 
   const visiblePositions = [
     { dIndex: (activeIndex - 1 + dims.length) % dims.length, pos: 0 },
@@ -260,7 +239,18 @@ export default function RESULTATEN() {
 
   return (
     <div className="w-full h-full bg-transparent p-4">
-      
+
+      <style>{`
+        @keyframes schijfDraaiNext {
+          from { transform: rotate(-16deg); }
+          to   { transform: rotate(0deg); }
+        }
+        @keyframes schijfDraaiPrev {
+          from { transform: rotate(16deg); }
+          to   { transform: rotate(0deg); }
+        }
+      `}</style>
+
       <div className="hidden md:flex flex-col items-center justify-center w-full max-w-9/10 mx-auto p-6 border-2 border-blue-900 bg-blue-50 rounded-lg shadow-md gap-4">
         <div className="flex bg-slate-200 p-1 rounded-xl shadow-inner w-64 border border-slate-300">
           <button onClick={() => setViewMode('team')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'team' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>Jouw team</button>
@@ -298,8 +288,6 @@ export default function RESULTATEN() {
 
       {/* Mobiele weergave */}
       <div className="flex md:hidden w-full max-w-md mx-auto flex-col justify-between bg-[#F8FAFC] font-sans text-[#1E254C] relative overflow-hidden select-none rounded-[40px] shadow-2xl border border-slate-100">
-        <DraaiTelefoonHint />
-
         <div className="text-center my-6 p-4 mx-6 bg-white border border-gray-200 rounded-3xl shadow-lg">
           <p className="text-purple-600 font-bold text-xs tracking-widest uppercase">Dimensie {dims[activeIndex].id} van {dims.length}</p>
           <h4 className="text-xl font-black mt-1 text-[#1E254C] tracking-tight">{dims[activeIndex].label.replace('\n', ' ')}</h4>
@@ -319,25 +307,33 @@ export default function RESULTATEN() {
 
           <div className="w-full relative z-0 -mb-24 transform translate-y-4 overflow-visible">
             <svg viewBox={`0 0 ${mWidth} ${mHeight}`} className="w-full overflow-visible">
-              {visiblePositions.map(({ dIndex, pos }) => {
-                const sa = mStartAngle + pos * segmentWidth
-                const ea = sa + segmentWidth
-                const midAngleDeg = ((sa + ea) / 2 * 180) / Math.PI
-                const isActive = pos === 1
-                const baseColor = isActive ? '#D9D6EF' : '#EDEBF7'
-                const textRadius = (mIr + mOr) / 2
+              <g
+                key={spinKey}
+                style={{
+                  transformOrigin: `${mCx}px ${mCy}px`,
+                  animation: `${spinDir === 'next' ? 'schijfDraaiNext' : 'schijfDraaiPrev'} 0.4s ease-out`,
+                }}
+              >
+                {visiblePositions.map(({ dIndex, pos }) => {
+                  const sa = mStartAngle + pos * segmentWidth
+                  const ea = sa + segmentWidth
+                  const midAngleDeg = ((sa + ea) / 2 * 180) / Math.PI
+                  const isActive = pos === 1
+                  const baseColor = isActive ? '#D9D6EF' : '#EDEBF7'
+                  const textRadius = (mIr + mOr) / 2
 
-                return (
-                  <g key={dIndex} className="transition-all duration-500 ease-out">
-                    <path d={arc(mCx, mCy, sa, ea, mIr, mOr)} fill={baseColor} stroke="#F8FAFC" strokeWidth={4} />
-                    <g transform={`translate(${mCx}, ${mCy}) rotate(${midAngleDeg + 90}) translate(0, ${-textRadius})`}>
-                      <text textAnchor="middle" dominantBaseline="middle" className={`font-black fill-[#1E254C] select-none pointer-events-none ${isActive ? 'text-[15px]' : 'text-[13px]'}`} opacity={isActive ? 1 : 0.4}>
-                        {dims[dIndex].short}
-                      </text>
+                  return (
+                    <g key={dIndex} className="transition-all duration-500 ease-out">
+                      <path d={arc(mCx, mCy, sa, ea, mIr, mOr)} fill={baseColor} stroke="#F8FAFC" strokeWidth={4} />
+                      <g transform={`translate(${mCx}, ${mCy}) rotate(${midAngleDeg + 90}) translate(0, ${-textRadius})`}>
+                        <text textAnchor="middle" dominantBaseline="middle" className={`font-black fill-[#1E254C] select-none pointer-events-none ${isActive ? 'text-[15px]' : 'text-[13px]'}`} opacity={isActive ? 1 : 0.4}>
+                          {dims[dIndex].short}
+                        </text>
+                      </g>
                     </g>
-                  </g>
-                )
-              })}
+                  )
+                })}
+              </g>
             </svg>
           </div>
 
