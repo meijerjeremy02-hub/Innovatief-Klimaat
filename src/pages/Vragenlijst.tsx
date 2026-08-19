@@ -50,6 +50,13 @@ export default function Vragenlijst() {
   const navigate = useNavigate()
   const HuidigeVraag = vragen[huidig]
 
+  useEffect(() => {
+  setHuidig(0)
+}, [setHuidig])
+
+useEffect(() => {
+  scrollNaarTop()
+}, [huidig])
   const handleWisSessie = () => {
     wisSessie()
     setHuidig(0)
