@@ -23,7 +23,7 @@ export default function Paginatie() {
         <button
           onClick={() => setHuidig(huidig - 1)}
           disabled={huidig === 0}
-          className="h-8 w-8 md:h-10 md:w-10 shrink-0 rounded-md border-2 border-blue-900 bg-white text-base md:text-lg disabled:opacity-30 cursor-pointer"
+          className="h-8 w-8 md:h-10 md:w-10 shrink-0 rounded-md border-2 border-blue-900 bg-white text-base md:text-lg disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
         >
           ←
         </button>
