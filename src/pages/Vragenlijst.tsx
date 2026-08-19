@@ -20,7 +20,7 @@ import Cirkelv7 from '../images/Foto7.png'
 import Cirkelv8 from '../images/Foto8.png'
 import Cirkelv9 from '../images/Foto9.png'
 import Cirkelv10 from '../images/Foto10.png'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const vragen = [Vragen1, Vragen2, Vragen3, Vragen4, Vragen5, Vragen6, Vragen7, Vragen8, Vragen9, Vragen10]
 const cirkels = [Cirkelv1, Cirkelv2, Cirkelv3, Cirkelv4, Cirkelv5, Cirkelv6, Cirkelv7, Cirkelv8, Cirkelv9, Cirkelv10]
@@ -38,24 +38,44 @@ const uitleg = [
   'In een klimaat waarin je meer uitgedaagd wordt, zowel bij dagelijkse activiteiten als bij lange termijn doelstellingen, zijn medewerkers intrinsiek gemotiveerd om hieraan bij te dragen. Daarbij vinden ze meer betekenis in hun werk, voelen ze hun eigen meerwaarde en investeren ze meer energie.',
 ]
 
-export default function Vragenlijst() {
-  useEffect(() => {
+const scrollNaarTop = () => {
+  setTimeout(() => {
     document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
-  }, []);
+  }, 50)
+}
 
-  const { huidig, setHuidig } = useVragen()
+export default function Vragenlijst() {
+  const { huidig, setHuidig, antwoorden, verstuurNaarBackend, wisSessie } = useVragen()
+  const [laadStatus, setLaadStatus] = useState<string | null>(null)
   const navigate = useNavigate()
   const HuidigeVraag = vragen[huidig]
 
+  useEffect(() => {
+    scrollNaarTop()
+  }, [huidig])
+
+  const actieveSetNummer = huidig + 1
+  const aantalBeantwoord = Object.keys(antwoorden[actieveSetNummer] || {}).length
+  const magNaarVolgende = aantalBeantwoord === 5
+
   const spreekTekst = (tekst: string) => {
     window.speechSynthesis.cancel()
-
     const spraak = new SpeechSynthesisUtterance(tekst)
     spraak.lang = 'nl-NL'
     spraak.rate = 1
     spraak.pitch = 1
-
     window.speechSynthesis.speak(spraak)
+  }
+
+  const hanteerVersturen = async () => {
+    setLaadStatus('Verzenden...')
+    const resultaat = await verstuurNaarBackend()
+    if (resultaat.succes) {
+      setLaadStatus(null)
+      navigate('/resultaten')
+    } else {
+      setLaadStatus(resultaat.bericht)
+    }
   }
 
   return (
@@ -63,17 +83,23 @@ export default function Vragenlijst() {
       <div className="mt-[3%] ml-17 mr-[1%] mb-8 md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
         <div className="p-1 text-center"></div>
 
-        <div className="md:px-[5%] px-[4%]">
+        <div className="md:px-[5%] px-[4%] flex justify-between items-center">
           <button
             onClick={() => spreekTekst(uitleg[huidig])}
-            className="flex bg-blue-900 text-white px-10 py-2 rounded-lg hover:bg-blue-800 cursor-pointer mb-1"
+            className="flex bg-blue-900 text-white px-10 py-2 rounded-lg hover:bg-blue-800 cursor-pointer mb-1 text-sm font-medium"
           >
             🔊 Voorlezen
           </button>
+          <button
+            onClick={wisSessie}
+            className="text-xs text-red-500 hover:underline cursor-pointer"
+          >
+            Sessie wissen
+          </button>
         </div>
 
-        <div className="flex flex-col-reverse md:flex-row [@media(max-height:500px)]:flex-col-reverse! my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3">
-          <div className="bg-blue-100 border-2 border-blue-900 shadow-xl/40 w-full h-full pt-[2%] pb-[10%] rounded-lg p-3 mb-4">
+        <div className="flex flex-col-reverse md:flex-row [@media(max-height:500px)]:flex-col-reverse! my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3 mt-3">
+          <div className="bg-blue-100 mx-[1%] border-2 border-blue-900 shadow-xl/40 w-full h-full pt-[2%] pb-[10%] rounded-lg p-2 mb-4">
             <p className="md:text-lg text-sm md:text-left text-center text-gray-700">{uitleg[huidig]}</p>
           </div>
           <div className="w-full flex items-center justify-center bg-white border-2 border-blue-900 rounded-lg p-4 md:bg-transparent md:border-0 md:p-0 mb-4">
@@ -86,31 +112,36 @@ export default function Vragenlijst() {
         </div>
 
         <div className="md:px-[5%] px-[4%]">
-          <HuidigeVraag />
+          {HuidigeVraag && <HuidigeVraag />}
         </div>
+
+        {laadStatus && (
+          <p className="text-center text-sm font-semibold text-red-600 mt-2">{laadStatus}</p>
+        )}
 
         <div className="px-10 mt-6">
           <div className="flex mx-auto mb-10 gap-5 justify-center">
             <button
-              onClick={() => {
-                setHuidig(huidig - 1)
-                document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
-              }}
+              onClick={() => setHuidig(huidig - 1)}
               disabled={huidig === 0}
-              className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 disabled:opacity-30 cursor-pointer"
+              className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 disabled:opacity-30 cursor-pointer font-bold text-center"
             >
               Vorige
             </button>
             <button
               onClick={() => {
                 if (huidig === 9) {
-                  navigate('/resultaten')
+                  hanteerVersturen()
                 } else {
                   setHuidig(huidig + 1)
                 }
-                document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
               }}
-              className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 cursor-pointer"
+              disabled={!magNaarVolgende}
+              className={`flex-1 border-3 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 font-bold text-center transition-all ${
+                magNaarVolgende
+                  ? 'bg-orange-400 hover:bg-orange-300 border-blue-900 cursor-pointer'
+                  : 'bg-orange-200 text-gray-400 border-blue-700 cursor-not-allowed'
+              }`}
             >
               {huidig === 9 ? 'Verstuur' : 'Volgende'}
             </button>

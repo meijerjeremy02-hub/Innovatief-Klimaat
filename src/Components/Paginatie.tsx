@@ -4,8 +4,17 @@ import { useVragen } from './VragenContext'
 const TOTAAL = 10
 
 export default function Paginatie() {
-  const { huidig, setHuidig } = useVragen()
+  const { huidig, setHuidig, antwoorden } = useVragen()
   const navigate = useNavigate()
+
+  const isBeantwoord = (i: number) => Object.keys(antwoorden[i + 1] || {}).length === 5
+  const magNaar = (i: number) => {
+    if (i <= huidig) return true
+    for (let j = huidig; j < i; j++) {
+      if (!isBeantwoord(j)) return false
+    }
+    return true
+  }
 
   return (
     <div className="flex flex-col gap-3 pb-1 bg-transparent md:w-full border-2 border-blue-900 rounded-md md:border-transparent">
@@ -22,15 +31,22 @@ export default function Paginatie() {
         <div className="flex flex-col gap-2">
           {Array.from({ length: TOTAAL }, (_, i) => {
             const isCurrent = huidig === i
+            const beantwoord = isBeantwoord(i)
+            const toegestaan = magNaar(i)
 
             return (
               <button
                 key={i}
-                onClick={() => setHuidig(i)}
-                className={`h-8 w-8 md:h-10 md:w-10 shrink-0 rounded-md border-2 border-blue-900 text-sm md:text-lg cursor-pointer ${
+                onClick={() => toegestaan && setHuidig(i)}
+                disabled={!toegestaan}
+                className={`h-8 w-8 md:h-10 md:w-10 shrink-0 rounded-md border-2 text-sm md:text-lg transition-colors ${
                   isCurrent
-                    ? 'bg-[#DECAB7] text-orange-800'
-                    : 'bg-white text-black'
+                    ? 'border-blue-900 bg-[#DECAB7] text-orange-800 cursor-pointer'
+                    : beantwoord
+                    ? 'border-green-700 bg-green-100 text-green-800 cursor-pointer'
+                    : toegestaan
+                    ? 'border-blue-900 bg-white text-black cursor-pointer'
+                    : 'border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed'
                 }`}
               >
                 {i + 1}
@@ -41,19 +57,18 @@ export default function Paginatie() {
 
         <button
           onClick={() => setHuidig(huidig + 1)}
-          disabled={huidig === TOTAAL - 1}
+          disabled={huidig === TOTAAL - 1 || !isBeantwoord(huidig)}
           className="h-8 w-8 md:h-10 md:w-10 shrink-0 rounded-md border-2 border-blue-900 bg-white text-base md:text-lg disabled:opacity-30 cursor-pointer"
         >
           →
         </button>
       </div>
+
       <div>
         <div className="h-2 overflow-hidden rounded-full bg-gray-200">
           <div
             className="h-full rounded-full bg-orange-700 transition-all duration-300"
-            style={{
-              width: `${((huidig + 1) / TOTAAL) * 100}%`,
-            }}
+            style={{ width: `${((huidig + 1) / TOTAAL) * 100}%` }}
           />
         </div>
       </div>
