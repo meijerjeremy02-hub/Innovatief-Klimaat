@@ -109,7 +109,7 @@ useEffect(() => {
           </button>
           <button
             onClick={handleWisSessie}
-            className="text-xs text-red-500 hover:underline cursor-pointer"
+            className="p-1.5 bg-blue-50 shadow-xl rounded-xl text-xs text-red-500 hover:underline cursor-pointer"
           >
             Sessie wissen
           </button>

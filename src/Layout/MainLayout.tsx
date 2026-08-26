@@ -5,7 +5,7 @@ import Orange_Balk from '../Components/Oranje_Balk'
 
 export default function MainLayout() {
   return (
-    <main className="relative min-h-dvh grid grid-cols-[auto_1fr] grid-rows-[auto_1fr_auto] bg-linear-to-b from-orange-400 via-[#DECAB7] to-blue-900 overflow-x-hidden md:scrollbar-thumb-blue-900 md:scrollbar-track-gray-200">
+    <main className="relative min-h-dvh grid grid-cols-[auto_1fr] grid-rows-[auto_1fr_auto] bg-linear-to-b from-orange-400 via-[#DECAB7] to-blue-900  overflow-x-hidden overflow-y-visible md:scrollbar-thumb-blue-900 md:scrollbar-track-gray-200">
       <div className="absolute top-0" id="top"></div>
       <Orange_Balk />
       <div className="col-start-2 row-start-2 flex flex-row">

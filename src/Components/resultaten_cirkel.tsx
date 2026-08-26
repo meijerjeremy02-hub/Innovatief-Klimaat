@@ -251,7 +251,7 @@ export default function RESULTATEN() {
         }
       `}</style>
 
-      <div className="hidden md:flex flex-col items-center justify-center w-full max-w-9/10 mx-auto p-6 border-2 border-blue-900 bg-blue-50 rounded-lg shadow-md gap-4">
+      <div className="hidden md:flex flex-col items-center justify-center w-full max-w-9/10 mx-auto p-6 border-2 border-blue-900 bg-blue-50 shadow-2xl shadow-mist-700 rounded-lg gap-4">
         <div className="flex bg-slate-200 p-1 rounded-xl shadow-inner w-64 border border-slate-300">
           <button onClick={() => setViewMode('team')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'team' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>Jouw team</button>
           <button onClick={() => setViewMode('college')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'college' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>College-wijd</button>

@@ -9,13 +9,15 @@ export default function RESULTATEN() {
   
   return (
   <div className="flex flex-col flex-1 mt-10 border-2 border-blue-900  bg-white rounded-lg mb-15 ml-6 md:ml-10 md:mr-10">
-    <div className="flex flex-col p-1.5 md:p-5 min-h-screen text-center w-full gap-6">
-      <h1 className="text-4xl font-bold">
+    <div className="flex flex-col p-1.5 md:p-5 min-h-screen text-center w-full gap-6 shadow-xs">
+      <div className="flex flex-col gap-4 md:gap-6 items-center justify-center w-full leading-snug md:pt-1">
+      <h1 className="text-3xl font-bold text-shadow-xs text-blue-950 md:text-4xl">
         resultaten
       </h1>
-      <p className="text-center text-lg w-full max-w-6/8 mx-auto">
+      <p className="text-center text-lg w-full max-w-6/8 mx-auto text-shadow-xs text-blue-950 md:text-xl">
         Op basis van jouw antwoorden hebben we een overzicht gemaakt van de sterke punten en ontwikkelpunten binnen jouw team. Door met de muis over deze overizchten te bewegen of door op de overzichten te klikken krijg je de resultaten te zien van jouw team en de gemiddelde resultaten van alle teams die de vragenlijst hebben ingevuld. Deze inzichten kunnen je helpen om te begrijpen waar jullie als team goed in zijn en waar nog ruimte is voor groei en verbetering.
       </p>
+      </div>
       <div className="md:flex mx-auto w-full mt-10">
         <div className="flex-1 flex-col gap-6">
         <Resultaten_Cirkel />   
