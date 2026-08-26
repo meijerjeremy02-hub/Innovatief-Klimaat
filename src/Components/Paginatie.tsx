@@ -17,6 +17,7 @@ export default function Paginatie() {
   }
 
   return (
+  <div className="sticky top-8">
     <div className="flex flex-col gap-3 pb-1 bg-transparent md:w-full border-2 border-blue-900 rounded-md md:border-transparent">
       <div className="flex flex-col w-full items-center justify-center gap-3">
 
@@ -65,7 +66,7 @@ export default function Paginatie() {
       </div>
 
       <div>
-        <div className="h-2 overflow-hidden rounded-full bg-gray-200">
+        <div className="h-2 overflow-hidden rounded-full bg-gray-200 mt-7">
           <div
             className="h-full rounded-full bg-orange-700 transition-all duration-300"
             style={{ width: `${((huidig + 1) / TOTAAL) * 100}%` }}
@@ -82,5 +83,6 @@ export default function Paginatie() {
         </button>
       )}
     </div>
+  </div>
   )
 }

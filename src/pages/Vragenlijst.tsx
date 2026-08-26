@@ -141,7 +141,7 @@ useEffect(() => {
             <button
               onClick={() => setHuidig(huidig - 1)}
               disabled={huidig === 0}
-              className="flex-1 bg-orange-400 border-3 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 disabled:bg-orange-400 disabled:border-blue-900 opacity-30 disabled:cursor-not-allowed cursor-pointer font-bold text-center"
+              className="flex-1 bg-orange-400 border-3 opacity-100 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 disabled:bg-orange-400 disabled:border-blue-900 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-bold text-center"
             >
               Vorige
             </button>
@@ -156,7 +156,7 @@ useEffect(() => {
               disabled={!magNaarVolgende}
               className={`flex-1 border-3 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 font-bold text-center transition-all ${
                 magNaarVolgende
-                  ? 'bg-orange-400 hover:bg-orange-300 border-blue-900 cursor-pointer'
+                  ? 'bg-orange-400 hover:bg-orange-300 opacity-100 border-blue-900 cursor-pointer'
                   : 'bg-orange-400 border-blue-900 opacity-30 cursor-not-allowed'
               }`}
             >
