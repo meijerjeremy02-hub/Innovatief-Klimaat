@@ -7,7 +7,7 @@ export default function Vragen1() {
   const paginaAntwoorden = antwoorden[setNummer] || {}
 
   return (
-    <div className="flex rounded-lg flex-col border-2 mx-auto max-w-300 gap-3 p-2 bg-orange-50 border-blue-900">
+    <div className="flex rounded-lg flex-col border-2 mx-auto max-w-300 gap-3 md:p-2 p-1 bg-orange-50 border-blue-900">
       <VraagRij tekst="1. Ik beslis zelf hoe ik mijn werk aanpak." waarde={paginaAntwoorden[0] || null} onAntwoordChange={(n) => setAntwoord(setNummer, 0, n)} />
       <VraagRij tekst="2. Ik heb ruimte om nieuwe ideeën uit te proberen." waarde={paginaAntwoorden[1] || null} onAntwoordChange={(n) => setAntwoord(setNummer, 1, n)} />
       <VraagRij tekst="3. Procedurele regels beperken ons niet overdreven." waarde={paginaAntwoorden[2] || null} onAntwoordChange={(n) => setAntwoord(setNummer, 2, n)} />

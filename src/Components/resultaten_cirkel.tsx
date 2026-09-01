@@ -203,13 +203,13 @@ export default function RESULTATEN() {
   const [hoveredPersonal, setHoveredPersonal] = useState<number | null>(null)
   const [hoveredSwitch, setHoveredSwitch] = useState<number | null>(null)
   const [activeIndex, setActiveIndex] = useState(0)
-  const [viewMode, setViewMode] = useState<'team' | 'college'>('team')
+  const [viewMode, setViewMode] = useState<'team' | 'organisatie'>('team')
   const [spinKey, setSpinKey] = useState(0)
   const [spinDir, setSpinDir] = useState<'next' | 'prev'>('next')
 
   const personalScores = [19, 16, 22, 14, 24, 18, 9, 20, 15, 22]
   const teamScores = [18, 15, 20, 12, 22, 17, 8, 19, 14, 21]
-  const collegeScores = [15, 14, 17, 13, 19, 16, 11, 15, 13, 17]
+  const organisatieScores = [15, 14, 17, 13, 19, 16, 11, 15, 13, 17]
 
   const handlePrev = () => {
     setActiveIndex((prev) => (prev === 0 ? dims.length - 1 : prev - 1))
@@ -232,9 +232,9 @@ export default function RESULTATEN() {
   const segmentWidth = (segmentDegrees * Math.PI) / 180
   const mStartAngle = -Math.PI / 2 - (segmentWidth * 1.5)
 
-  const rightScoreLabel = viewMode === 'team' ? 'JOUW TEAM' : 'COLLEGE-WIJD'
-  const rightScoreValue = viewMode === 'team' ? teamScores[activeIndex] : collegeScores[activeIndex]
-  const switchScores = viewMode === 'team' ? teamScores : collegeScores
+  const rightScoreLabel = viewMode === 'team' ? 'JOUW TEAM' : 'ORGANISATIE'
+  const rightScoreValue = viewMode === 'team' ? teamScores[activeIndex] : organisatieScores[activeIndex]
+  const switchScores = viewMode === 'team' ? teamScores : organisatieScores
   const switchTitle = viewMode === 'team' ? 'Het gemiddelde van jouw team' : 'Het gemiddelde van alle teams'
 
   return (
@@ -254,7 +254,7 @@ export default function RESULTATEN() {
       <div className="hidden md:flex flex-col items-center justify-center w-full max-w-9/10 mx-auto p-6 border-2 border-blue-900 bg-blue-50 shadow-2xl shadow-mist-700 rounded-lg gap-4">
         <div className="flex bg-slate-200 p-1 rounded-xl shadow-inner w-64 border border-slate-300">
           <button onClick={() => setViewMode('team')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'team' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>Jouw team</button>
-          <button onClick={() => setViewMode('college')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'college' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>College-wijd</button>
+          <button onClick={() => setViewMode('organisatie')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'organisatie' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>Organisatie</button>
         </div>
 
         {/* Dynamische PDF downloadlink */}
@@ -264,7 +264,7 @@ export default function RESULTATEN() {
               <InnovatieKlimaatPdf 
                 personal={personalScores} 
                 team={teamScores} 
-                college={collegeScores} 
+                organisatie={organisatieScores} 
               />
             }
             fileName="Mijn_Innovatieklimaat_Rapport.pdf"
@@ -351,7 +351,7 @@ export default function RESULTATEN() {
           <div className="w-full bg-white rounded-t-[120px] rounded-b-xl shadow-[0_-10px_40px_rgba(148,163,184,0.24)] px-8 pt-20 pb-8 relative z-10 flex flex-col items-center border-t border-slate-100/60">
             <div className="flex bg-slate-100 p-1 rounded-xl mb-6 shadow-inner w-60 border border-slate-200/30">
               <button onClick={() => setViewMode('team')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'team' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>Jouw team</button>
-              <button onClick={() => setViewMode('college')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'college' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>College-wijd</button>
+              <button onClick={() => setViewMode('organisatie')} className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${viewMode === 'organisatie' ? 'bg-white text-[#1E254C] shadow-sm' : 'text-gray-400'}`}>Organisatie</button>
             </div>
 
             <div className="w-full flex justify-between items-center text-center px-4 mb-6">
@@ -383,7 +383,7 @@ export default function RESULTATEN() {
               <InnovatieKlimaatPdf 
                 personal={personalScores} 
                 team={teamScores} 
-                college={collegeScores} 
+                organisatie={organisatieScores} 
               />
             }
             fileName="Mijn_Innovatieklimaat_Rapport.pdf"

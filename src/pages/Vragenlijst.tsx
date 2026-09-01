@@ -97,7 +97,7 @@ useEffect(() => {
 
   return (
     <div id="top" className="min-h-dvh w-full overflow-x-hidden">
-      <div className="mt-[3%] ml-17 mr-[1%] mb-8 md:p-5 md:mx-auto md:mb-10 md:mt-10 md:w-2/3 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
+      <div className="mt-[3%] md:mx-[20%] mx-2 mb-8 md:p-5 md:mb-10 md:mt-10 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
         <div className="p-1 text-center"></div>
 
         <div className="md:px-[5%] px-[4%] flex justify-between items-center">
@@ -129,6 +129,11 @@ useEffect(() => {
         </div>
 
         <div className="md:px-[5%] px-[4%]">
+          <div className="flex sm:hidden items-center justify-between px-1 text-sm font-semibold">
+            <span className="text-blue-400">oneens</span>
+            <span className="text-blue-900">eens</span>
+          </div>
+
           {HuidigeVraag && <HuidigeVraag />}
         </div>
 

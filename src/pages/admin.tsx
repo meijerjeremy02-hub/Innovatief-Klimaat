@@ -1,4 +1,71 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
+// kleine inline iconen (geen extra dependency nodig)
+type IconProps = { className?: string }
+
+const IconWrap = ({ className, children }: IconProps & { children: React.ReactNode }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    {children}
+  </svg>
+)
+
+const Users = ({ className }: IconProps) => (
+  <IconWrap className={className}>
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </IconWrap>
+)
+
+const QrCode = ({ className }: IconProps) => (
+  <IconWrap className={className}>
+    <rect x="3" y="3" width="7" height="7" rx="1" />
+    <rect x="14" y="3" width="7" height="7" rx="1" />
+    <rect x="3" y="14" width="7" height="7" rx="1" />
+    <path d="M14 14h3v3h-3zM14 21h3M21 14v3M18 21h3v-3" />
+  </IconWrap>
+)
+
+const Copy = ({ className }: IconProps) => (
+  <IconWrap className={className}>
+    <rect x="9" y="9" width="13" height="13" rx="2" />
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  </IconWrap>
+)
+
+const Check = ({ className }: IconProps) => (
+  <IconWrap className={className}>
+    <path d="M20 6 9 17l-5-5" />
+  </IconWrap>
+)
+
+const Plus = ({ className }: IconProps) => (
+  <IconWrap className={className}>
+    <path d="M12 5v14M5 12h14" />
+  </IconWrap>
+)
+
+const Search = ({ className }: IconProps) => (
+  <IconWrap className={className}>
+    <circle cx="11" cy="11" r="8" />
+    <path d="m21 21-4.35-4.35" />
+  </IconWrap>
+)
+
+const Download = ({ className }: IconProps) => (
+  <IconWrap className={className}>
+    <path d="M12 3v12m0 0-4-4m4 4 4-4" />
+    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+  </IconWrap>
+)
+
+const BarChart3 = ({ className }: IconProps) => (
+  <IconWrap className={className}>
+    <path d="M3 3v18h18" />
+    <path d="M18 17V9M13 17V5M8 17v-4" />
+  </IconWrap>
+)
 
 const dims = [
   { id: 1,  short: 'Vrijheid' },
@@ -15,8 +82,7 @@ const dims = [
 
 const collegeScores = [15, 14, 17, 13, 19, 16, 11, 15, 13, 17]
 const MAX_SCORE = 25
-const gemiddelde = (collegeScores.reduce((a, b) => a + b, 0) / collegeScores.length).toFixed(1)
-const respondenten = 24 // aantal teams dat de vragenlijst heeft ingevuld
+const RESPONDENTEN_ALLE_TEAMS = 24
 
 const scoreColor = (score: number) => {
   if (score <= 6)  return 'bg-blue-950'
@@ -25,253 +91,227 @@ const scoreColor = (score: number) => {
   return 'bg-blue-300'
 }
 
-function WindowControls() {
-  return (
-    <div className="flex items-center h-full select-none">
-      <button
-        type="button"
-        tabIndex={-1}
-        className="flex items-center justify-center h-full w-9 text-blue-900/60 hover:bg-blue-900/10 transition-colors cursor-pointer"
-        aria-hidden="true"
-      >
-        <svg width="10" height="10" viewBox="0 0 10 10"><line x1="0" y1="5" x2="10" y2="5" stroke="currentColor" strokeWidth="1.2" /></svg>
-      </button>
-      <button
-        type="button"
-        tabIndex={-1}
-        className="flex items-center justify-center h-full w-9 text-blue-900/60 hover:bg-blue-900/10 transition-colors cursor-pointer"
-        aria-hidden="true"
-      >
-        <svg width="9" height="9" viewBox="0 0 10 10"><rect x="0.5" y="0.5" width="9" height="9" fill="none" stroke="currentColor" strokeWidth="1.2" /></svg>
-      </button>
-      <button
-        type="button"
-        tabIndex={-1}
-        className="flex items-center justify-center h-full w-9 text-blue-900/60 hover:bg-red-500 hover:text-white transition-colors cursor-pointer"
-        aria-hidden="true"
-      >
-        <svg width="10" height="10" viewBox="0 0 10 10">
-          <line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" strokeWidth="1.2" />
-          <line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" strokeWidth="1.2" />
-        </svg>
-      </button>
-    </div>
-  )
+const gemiddeldeVan = (scores: number[]) =>
+  (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1)
+
+const genereerCode = () => {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+  const blok = () => Array.from({ length: 4 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+  return `${blok()}-${blok()}`
+}
+
+// nieuwe teams krijgen willekeurige (demo-)scores per dimensie
+const genereerScores = () => dims.map(() => Math.floor(Math.random() * (MAX_SCORE - 6)) + 6)
+
+type Team = {
+  name: string
+  code: string
+  scores: number[]
+  aangemaakt: string
 }
 
 export default function Admin() {
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+  const [teams, setTeams] = useState<Team[]>([])
+  const [teamNaam, setTeamNaam] = useState('')
+  const [actieveCode, setActieveCode] = useState<Team | null>(null)
+  const [copied, setCopied] = useState(false)
+  const [zoekNaam, setZoekNaam] = useState('')
+
+  useEffect(() => { window.scrollTo(0, 0) }, [])
+
+  const handleGenereer = () => {
+    const naam = teamNaam.trim()
+    if (!naam) return
+    const nieuwTeam: Team = {
+      name: naam,
+      code: genereerCode(),
+      scores: genereerScores(),
+      aangemaakt: new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+    }
+    setTeams((prev) => [...prev.filter((t) => t.name.toLowerCase() !== naam.toLowerCase()), nieuwTeam])
+    setActieveCode(nieuwTeam)
+    setTeamNaam('')
+  }
+
+  const handleCopy = async () => {
+    if (!actieveCode) return
+    try {
+      await navigator.clipboard.writeText(actieveCode.code)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      // clipboard niet beschikbaar; stil negeren
+    }
+  }
+
+  const zoekTrim = zoekNaam.trim().toLowerCase()
+  const toontAlleTeams = zoekTrim === ''
+  const gevondenTeam = useMemo(
+    () => (toontAlleTeams ? undefined : teams.find((t) => t.name.toLowerCase().includes(zoekTrim))),
+    [teams, zoekTrim, toontAlleTeams],
+  )
+  const geenMatch = !toontAlleTeams && !gevondenTeam
+
+  const tonenScores = toontAlleTeams ? collegeScores : gevondenTeam?.scores ?? []
+  const tonenGemiddelde = tonenScores.length ? gemiddeldeVan(tonenScores) : '–'
+  const tonenLabel = toontAlleTeams ? 'Alle teams · gemiddelde' : gevondenTeam ? gevondenTeam.name : 'Geen match'
+  const tonenRespondenten = toontAlleTeams ? RESPONDENTEN_ALLE_TEAMS : gevondenTeam ? 1 : 0
 
   return (
-    <div className="flex flex-col items-center pl-6 max-w-29/30 mb-5 lg:px-12 py-2 min-h-dvh md:flex-1 md:min-h-0">
-      <div className="relative h-full w-full overflow-hidden border-3 border-blue-900 rounded-lg bg-linear-to-b from-blue-200 via-purple-100 to-white shadow-[-20px_0_70px_rgba(0,0,0,0.4)] flex flex-col p-5">
+    <div className="w-4/5 mx-auto max-h-[calc(100vh-2.5rem)] mt-2 rounded-lg border-2 border-blue-800 bg-slate-50 px-4 py-8 md:py-12 lg:px-12 overflow-hidden">
+      <div className="mx-auto max-w-6xl">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-blue-950 md:text-4xl">Admin Dashboard</h1>
+          <p className="mt-1 text-slate-500">Beheer teamtoegang en bekijk de resultaten van de vragenlijst.</p>
+        </header>
 
-        {/* subtiele scanline-textuur, easter egg laag 1 */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04] mix-blend-multiply"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(to bottom, rgba(30,58,138,0.6) 0px, rgba(30,58,138,0.6) 1px, transparent 1px, transparent 3px)',
-          }}
-        />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
-        {/* hoek-accenten, easter egg laag 2 (HUD/terminal-vibe) */}
-        <div className="pointer-events-none absolute top-3 left-3 h-4 w-4 border-t-2 border-l-2 border-blue-900/40" />
-        <div className="pointer-events-none absolute top-3 right-3 h-4 w-4 border-t-2 border-r-2 border-blue-900/40" />
-        <div className="pointer-events-none absolute bottom-3 left-3 h-4 w-4 border-b-2 border-l-2 border-blue-900/40" />
-        <div className="pointer-events-none absolute bottom-3 right-3 h-4 w-4 border-b-2 border-r-2 border-blue-900/40" />
-
-        {/* statusregel, easter egg laag 3 */}
-        <div className="relative flex items-center gap-1 font-mono text-[10px] tracking-wider text-blue-900/50 mb-1 select-none">
-          <span>root@deltion-admin:~$ sessie geauthenticeerd</span>
-          <span className="animate-pulse">▮</span>
-        </div>
-
-        <div className="flex-1 flex flex-col items-center gap-6">
-          <h1 className="relative text-4xl font-extrabold mb-3 max-w-9/10 text-center text-blue-950 w-full">
-            Admin Dashboard
-          </h1>
-
-          <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 w-full items-start">
-
-            {/* Teamtoegang: code + QR samen, Windows-venster */}
-            <div className="md:col-span-1 relative flex flex-col rounded-lg border border-blue-900/70 bg-white shadow-[0_4px_14px_rgba(30,58,138,0.15)] overflow-hidden">
-
-              {/* titelbalk, Windows-stijl */}
-              <div className="relative flex items-center justify-between bg-blue-50 border-b border-blue-900/20 pl-3 h-8">
-                <span className="font-mono text-[10px] text-blue-900/50">access.exe</span>
-                <WindowControls />
-              </div>
-
-              <div className="relative flex flex-col gap-3 p-4">
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-multiply"
-                  style={{
-                    backgroundImage:
-                      'repeating-linear-gradient(to bottom, rgba(30,58,138,0.6) 0px, rgba(30,58,138,0.6) 1px, transparent 1px, transparent 3px)',
-                  }}
-                />
-
-                <div className="relative flex items-center justify-between">
-                  <h2 className="font-bold text-blue-950 text-shadow-xs">Teamtoegang</h2>
-                  <span className="flex items-center gap-1 font-mono text-[9px] text-blue-900/40">
-                    <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                    actief
-                  </span>
-                </div>
-
-                <div className="relative font-mono text-[11px] text-blue-900/60 bg-blue-950/5 border border-blue-900/20 rounded px-2 py-1">
-                  <span className="text-blue-900/40">$</span> generate --code --qr --team=new
-                </div>
-
-                <p className="relative text-sm text-blue-950/70">
-                  Genereer een teamcode met bijbehorende QR-code voor snelle toegang.
-                </p>
-
-                <div className="relative flex flex-col sm:flex-row md:flex-col gap-4 items-center">
-                  <div className="flex items-center justify-center aspect-square w-28 shrink-0 rounded-md border-2 border-dashed border-blue-900/30 bg-blue-950/5">
-                    <span className="font-mono text-[10px] text-blue-900/40 text-center px-2">
-                      qr verschijnt hier
-                    </span>
-                  </div>
-
-                  <div className="flex flex-col gap-2 w-full">
-                    <div className="flex items-center justify-between gap-2 rounded-md border border-blue-900/30 bg-blue-950/5 px-3 py-2 font-mono text-sm text-blue-950">
-                      <span>XXXX-XXXX</span>
-                      <button
-                        type="button"
-                        className="text-xs text-blue-900/50 hover:text-blue-900 transition-colors cursor-pointer"
-                        aria-label="Kopieer teamcode"
-                      >
-                        copy
-                      </button>
-                    </div>
-
-                    <div className="flex flex-col gap-1 font-mono text-[10px] text-blue-900/40 px-0.5">
-                      <div className="flex items-center justify-between">
-                        <span>aangemaakt</span>
-                        <span>--:--:--</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>vervalt over</span>
-                        <span>24u 00m</span>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="rounded-lg border-2 border-blue-900 bg-orange-400 hover:bg-orange-500 transition-colors text-white font-semibold text-sm py-3 cursor-pointer"
-                    >
-                      Genereer teamtoegang
-                    </button>
-                  </div>
-                </div>
-
-                <p className="relative font-mono text-[9px] text-blue-900/30 text-center select-none">
-                  # writes to: teams.access_codes
-                </p>
-              </div>
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-1">
+            <div className="mb-1 flex items-center gap-2">
+              <Users className="h-5 w-5 text-blue-900" />
+              <h2 className="text-lg font-semibold text-blue-950">Teamtoegang</h2>
             </div>
+            <p className="mb-4 text-sm text-slate-500">Genereer een teamcode met QR-code voor snelle toegang.</p>
 
-            {/* Resultaten: diagnostics readout, Windows-venster */}
-            <div className="md:col-span-2 relative flex flex-col rounded-lg border border-blue-900/70 bg-white shadow-[0_4px_14px_rgba(30,58,138,0.15)] overflow-hidden">
+            <label htmlFor="teamnaam" className="mb-1 block text-sm font-medium text-blue-950">
+              Teamnaam
+            </label>
+            <input
+              id="teamnaam"
+              type="text"
+              value={teamNaam}
+              onChange={(e) => setTeamNaam(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleGenereer() }}
+              placeholder="Bijv. Team Innovatie"
+              className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-blue-950 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
 
-              {/* titelbalk, Windows-stijl */}
-              <div className="relative flex items-center justify-between bg-blue-50 border-b border-blue-900/20 pl-3 h-8">
-                <span className="font-mono text-[10px] text-blue-900/50">results.exe</span>
-                <WindowControls />
+            <button
+              type="button"
+              onClick={handleGenereer}
+              disabled={!teamNaam.trim()}
+              className="mb-5 flex w-full items-center justify-center gap-2 rounded-lg bg-orange-400 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Plus className="h-4 w-4" />
+              Teamcode genereren
+            </button>
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div className="mb-3 flex items-center justify-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-white">
+                  <QrCode className="h-8 w-8 text-slate-300" />
+                </div>
               </div>
 
-              <div className="relative flex flex-col gap-3 p-5">
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-multiply"
-                  style={{
-                    backgroundImage:
-                      'repeating-linear-gradient(to bottom, rgba(30,58,138,0.6) 0px, rgba(30,58,138,0.6) 1px, transparent 1px, transparent 3px)',
-                  }}
-                />
-
-                <h2 className="relative font-bold text-blue-950 text-shadow-xs">Resultaten</h2>
-
-                <div className="relative font-mono text-[11px] text-blue-900/60 bg-blue-950/5 border border-blue-900/20 rounded px-2 py-1">
-                  <span className="text-blue-900/40">$</span> query --scope=all-teams --metric=avg
-                </div>
-
-                <div className="relative flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] text-blue-900/50">
-                  <span className="px-2 py-0.5 rounded-full border border-blue-900/30 bg-blue-950/5">
-                    alle teams · gemiddelde
-                  </span>
-                  <span>respondenten: {respondenten} teams</span>
-                  <span>gem. score: {gemiddelde}/{MAX_SCORE}</span>
-                </div>
-
-                {/* diagnostics readout */}
-                <div className="relative w-full flex flex-col gap-2 py-1">
-                  {dims.map((d, i) => {
-                    const score = collegeScores[i]
-                    const pct = (score / MAX_SCORE) * 100
-                    return (
-                      <div key={d.id} className="flex items-center gap-3 font-mono text-[11px]">
-                        <span className="w-28 shrink-0 text-blue-950/70 truncate">{d.short}</span>
-                        <div className="flex-1 h-2 rounded-sm bg-blue-950/10 overflow-hidden">
-                          <div
-                            className={`h-full rounded-sm ${scoreColor(score)} transition-all duration-700`}
-                            style={{ width: `${pct}%` }}
-                          />
-                        </div>
-                        <span className="w-10 shrink-0 text-right text-blue-950/60">{score}/{MAX_SCORE}</span>
-                      </div>
-                    )
-                  })}
-
-                  {/* legenda blauwschaal */}
-                  <div className="mt-1 flex items-center gap-2 font-mono text-[9px] text-blue-900/40 select-none">
-                    <span>laag</span>
-                    <span className="h-2 w-4 rounded-sm bg-blue-950" />
-                    <span className="h-2 w-4 rounded-sm bg-blue-800" />
-                    <span className="h-2 w-4 rounded-sm bg-blue-500" />
-                    <span className="h-2 w-4 rounded-sm bg-blue-300" />
-                    <span>hoog</span>
-                  </div>
-
-                  <div className="mt-1 flex items-center justify-between font-mono text-[10px] text-blue-900/40 select-none">
-                    <span>scan voltooid · 10/10 dimensies</span>
-                    <span className="animate-pulse">●</span>
-                  </div>
-                </div>
-
-                <div className="relative font-mono text-[9px] text-blue-900/30 text-center select-none">
-                  laatst bijgewerkt: --:--:--
-                </div>
-
+              <div className="mb-3 flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2">
+                <span className="font-mono text-base font-semibold tracking-wide text-blue-950">
+                  {actieveCode?.code ?? '—'}
+                </span>
                 <button
                   type="button"
-                  className="relative mt-auto flex items-center justify-center gap-2 rounded-lg border-2 border-blue-900 bg-orange-400 hover:bg-orange-500 transition-colors text-white font-semibold text-sm py-3 cursor-pointer"
+                  onClick={handleCopy}
+                  disabled={!actieveCode}
+                  aria-label="Kopieer teamcode"
+                  className="text-blue-900/60 transition-colors hover:text-blue-900 disabled:cursor-not-allowed disabled:opacity-30"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4"
-                  >
-                    <path d="M12 3v12m0 0-4-4m4 4 4-4" />
-                    <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-                  </svg>
-                  Download PDF
+                  {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
                 </button>
-                <p className="relative font-mono text-[9px] text-blue-900/30 text-center select-none">
-                  # export --format=pdf --scope=all-teams
-                </p>
               </div>
+
+              <dl className="space-y-1 text-xs text-slate-500">
+                <div className="flex justify-between">
+                  <dt>Team</dt>
+                  <dd className="text-slate-700">{actieveCode?.name ?? '—'}</dd>
+                </div>
+                <div className="flex justify-between">
+                  <dt>Aangemaakt</dt>
+                  <dd className="text-slate-700">{actieveCode?.aangemaakt ?? '—'}</dd>
+                </div>
+              </dl>
             </div>
 
-          </div>
+            <p className="mt-3 text-xs text-slate-400">
+              {teams.length} team{teams.length === 1 ? '' : 's'} opgeslagen
+            </p>
+          </section>
+
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
+            <div className="mb-1 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-blue-900" />
+              <h2 className="text-lg font-semibold text-blue-950">Resultaten</h2>
+            </div>
+            <p className="mb-4 text-sm text-slate-500">Bekijk scores per dimensie, voor alle teams of één specifiek team.</p>
+
+            <div className="relative mb-4">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                value={zoekNaam}
+                onChange={(e) => setZoekNaam(e.target.value)}
+                placeholder="Zoek op teamnaam (leeg = alle teams)"
+                className="w-full rounded-lg border border-slate-300 py-2 pl-9 pr-3 text-sm text-blue-950 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            <div className="mb-5 flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-900">
+                {tonenLabel}
+              </span>
+              <span className="text-sm text-slate-500">
+                {tonenRespondenten} respondent{tonenRespondenten === 1 ? '' : 'en'}
+              </span>
+              <span className="ml-auto text-sm font-semibold text-blue-950">
+                {tonenGemiddelde}
+                <span className="font-normal text-slate-400">/{MAX_SCORE}</span>
+              </span>
+            </div>
+
+            {geenMatch ? (
+              <div className="flex flex-col items-center justify-center gap-1 py-14 text-center">
+                <p className="text-sm font-medium text-slate-600">Geen resultaten voor "{zoekNaam.trim()}"</p>
+                <p className="text-xs text-slate-400">Controleer de teamnaam of genereer eerst teamtoegang.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {dims.map((d, i) => {
+                  const score = tonenScores[i]
+                  return (
+                    <div key={d.id} className="flex items-center gap-3">
+                      <span className="w-32 shrink-0 truncate text-sm text-slate-600">{d.short}</span>
+                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className={`h-full rounded-full ${scoreColor(score)} transition-all duration-700`}
+                          style={{ width: `${(score / MAX_SCORE) * 100}%` }}
+                        />
+                      </div>
+                      <span className="w-10 shrink-0 text-right text-sm font-medium text-blue-950">
+                        {score}/{MAX_SCORE}
+                      </span>
+                    </div>
+                  )
+                })}
+
+                <div className="flex items-center gap-2 pt-1 text-xs text-slate-400">
+                  <span>Laag</span>
+                  <span className="h-2 w-4 rounded-full bg-blue-950" />
+                  <span className="h-2 w-4 rounded-full bg-blue-800" />
+                  <span className="h-2 w-4 rounded-full bg-blue-500" />
+                  <span className="h-2 w-4 rounded-full bg-blue-300" />
+                  <span>Hoog</span>
+                </div>
+              </div>
+            )}
+
+            <button
+              type="button"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-blue-900 bg-white px-5 py-2.5 text-sm font-semibold text-blue-950 transition-colors hover:bg-blue-50 md:w-auto"
+            >
+              <Download className="h-4 w-4" />
+              Download als PDF
+            </button>
+          </section>
+
         </div>
       </div>
     </div>

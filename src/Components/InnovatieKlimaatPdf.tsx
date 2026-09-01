@@ -51,10 +51,10 @@ table: {
 interface PdfProps {
   personal: number[];
   team: number[];
-  college: number[];
+  organisatie: number[];
 }
 
-export default function InnovatieKlimaatPdf({ personal, team, college }: PdfProps) {
+export default function InnovatieKlimaatPdf({ personal, team, organisatie }: PdfProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -69,7 +69,7 @@ export default function InnovatieKlimaatPdf({ personal, team, college }: PdfProp
             <View style={[styles.tableColHeader, { width: '40%' }]}><Text style={styles.headerText}>Dimensie</Text></View>
             <View style={styles.tableColHeader}><Text style={styles.headerText}>Persoonlijk</Text></View>
             <View style={styles.tableColHeader}><Text style={styles.headerText}>Team gemiddelde</Text></View>
-            <View style={styles.tableColHeader}><Text style={styles.headerText}>College-wijd</Text></View>
+            <View style={styles.tableColHeader}><Text style={styles.headerText}>Organisatie</Text></View>
           </View>
 
           {/* Tabel Rijen (Dynamisch gevuld met jouw scores) */}
@@ -89,7 +89,7 @@ export default function InnovatieKlimaatPdf({ personal, team, college }: PdfProp
                   <Text style={[styles.scoreText, { color: scoreColor(team[i]) }]}>{team[i]} /25</Text>
                 </View>
                 <View style={currentColumnStyle}>
-                  <Text style={[styles.scoreText, { color: scoreColor(college[i]) }]}>{college[i]} /25</Text>
+                  <Text style={[styles.scoreText, { color: scoreColor(organisatie[i]) }]}>{organisatie[i]} /25</Text>
                 </View>
               </View>
             );

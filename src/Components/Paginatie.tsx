@@ -18,7 +18,7 @@ export default function Paginatie() {
 
   return (
   <div className="sticky top-3">
-    <div className="flex flex-col gap-3 pb-1 bg-transparent md:w-full border-2 border-blue-900 rounded-md md:border-transparent">
+    <div className="flex flex-col gap-3 pb-1 bg-transparent md:w-full">
       <div className="flex flex-col w-full items-center justify-center gap-3">
 
         <button
