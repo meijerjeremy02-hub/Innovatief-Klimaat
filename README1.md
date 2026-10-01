@@ -30,7 +30,7 @@ Innovatief Klimaat is een website waarmee docenten en docententeams meten hoe he
 
 **Wat bewust niet in deze sprint zit:** de koppeling met de API en het online zetten van de website. Dit volgt in een volgende sprint, zodra de API klaar is.
 
-### Reden(en) voor deze sprint
+### Reden(en) voor deze sprint`
 
 - Het gescheiden tonen van eigen resultaten en teamresultaten is nodig voor de privacy van de gebruikers.
 - De admin heeft filters nodig om de resultaten van teams en colleges zinvol te kunnen bekijken.
