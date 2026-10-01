@@ -1,5 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api'
+
+async function apiFoutmelding(response: Response) {
+  const body = await response.json().catch(() => null)
+  return body?.detail ?? body?.description ?? `Opslaan bij de API mislukt (${response.status}).`
+}
+
 // kleine inline iconen (geen extra dependency nodig)
 type IconProps = { className?: string }
 
@@ -80,6 +87,25 @@ const dims = [
   { id: 10, short: 'Uitdaging' },
 ]
 
+const categorieen = [
+  'Bouw',
+  'Defensie',
+  'Horeca',
+  'ICT',
+  'Installatie- & Elektrotechniek',
+  'Interieur',
+  'Kinderopvang & Onderwijs',
+  'Maak- & Procesindustrie',
+  'Metaal',
+  'Mobiliteit & Logistiek',
+  'Retail & E-commerce',
+  'Verf- & Applicatietechniek',
+  'Welzijn & Zorg',
+  'Infratechniek',
+  'Zakelijke Dienstverlening',
+  'Diensten'
+]
+
 const collegeScores = [15, 14, 17, 13, 19, 16, 11, 15, 13, 17]
 const MAX_SCORE = 25
 const RESPONDENTEN_ALLE_TEAMS = 24
@@ -106,6 +132,7 @@ const genereerScores = () => dims.map(() => Math.floor(Math.random() * (MAX_SCOR
 type Team = {
   name: string
   code: string
+  category: string
   scores: number[]
   aangemaakt: string
 }
@@ -113,30 +140,69 @@ type Team = {
 export default function Admin() {
   const [teams, setTeams] = useState<Team[]>([])
   const [teamNaam, setTeamNaam] = useState('')
+  const [categorie, setCategorie] = useState('')
   const [actieveCode, setActieveCode] = useState<Team | null>(null)
   const [copied, setCopied] = useState(false)
   const [zoekNaam, setZoekNaam] = useState('')
+  const [apiFout, setApiFout] = useState<string | null>(null)
+  const [bezig, setBezig] = useState(false)
 
   useEffect(() => { window.scrollTo(0, 0) }, [])
 
-  const handleGenereer = () => {
+  const handleGenereer = async () => {
     const naam = teamNaam.trim()
-    if (!naam) return
-    const nieuwTeam: Team = {
-      name: naam,
-      code: genereerCode(),
-      scores: genereerScores(),
-      aangemaakt: new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+    if (!naam || !categorie || bezig) return
+    setBezig(true)
+    setApiFout(null)
+
+    try {
+      const categoryResponse = await fetch(`${API_URL}/categories`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/ld+json, application/json',
+          'Content-Type': 'application/ld+json',
+        },
+        body: JSON.stringify({ name: categorie }),
+      })
+      if (!categoryResponse.ok) throw new Error(await apiFoutmelding(categoryResponse))
+
+      const category: { '@id'?: string; id?: number } = await categoryResponse.json()
+      const categoryIri = category['@id'] ?? (category.id ? `/api/categories/${category.id}` : '')
+      if (!categoryIri) throw new Error('De API gaf geen categorie-ID terug.')
+
+      const code = genereerCode()
+      const teamResponse = await fetch(`${API_URL}/teams`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/ld+json, application/json',
+          'Content-Type': 'application/ld+json',
+        },
+        body: JSON.stringify({ name: naam, code, category: categoryIri }),
+      })
+      if (!teamResponse.ok) throw new Error(await apiFoutmelding(teamResponse))
+
+      const team: { name?: string; code?: string } = await teamResponse.json()
+      const nieuwTeam: Team = {
+        name: team.name ?? naam,
+        code: team.code ?? code,
+        category: categorie,
+        scores: genereerScores(),
+        aangemaakt: new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      }
+      setTeams((prev) => [...prev.filter((item) => item.name.toLowerCase() !== naam.toLowerCase()), nieuwTeam])
+      setActieveCode(nieuwTeam)
+      setTeamNaam('')
+    } catch (error) {
+      setApiFout(error instanceof Error ? error.message : 'Teamcode aanmaken is mislukt.')
+    } finally {
+      setBezig(false)
     }
-    setTeams((prev) => [...prev.filter((t) => t.name.toLowerCase() !== naam.toLowerCase()), nieuwTeam])
-    setActieveCode(nieuwTeam)
-    setTeamNaam('')
   }
 
   const handleCopy = async () => {
     if (!actieveCode) return
     try {
-      await navigator.clipboard.writeText(actieveCode.code)
+      await navigator.clipboard.writeText(vragenlijstLink)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     } catch {
@@ -156,6 +222,16 @@ export default function Admin() {
   const tonenGemiddelde = tonenScores.length ? gemiddeldeVan(tonenScores) : '–'
   const tonenLabel = toontAlleTeams ? 'Alle teams · gemiddelde' : gevondenTeam ? gevondenTeam.name : 'Geen match'
   const tonenRespondenten = toontAlleTeams ? RESPONDENTEN_ALLE_TEAMS : gevondenTeam ? 1 : 0
+  const vragenlijstLink = actieveCode
+    ? (() => {
+        const url = new URL('/vragenlijst', window.location.origin)
+        url.searchParams.set('teamCode', actieveCode.code)
+        return url.toString()
+      })()
+    : ''
+  const qrCodeUrl = vragenlijstLink
+    ? `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(vragenlijstLink)}`
+    : ''
 
   return (
     <div className="w-4/5 mx-auto max-h-[calc(100vh-2.5rem)] mt-2 rounded-lg border-2 border-blue-800 bg-slate-50 px-4 py-8 md:py-12 lg:px-12 overflow-hidden">
@@ -164,6 +240,12 @@ export default function Admin() {
           <h1 className="text-3xl font-bold text-blue-950 md:text-4xl">Admin Dashboard</h1>
           <p className="mt-1 text-slate-500">Beheer teamtoegang en bekijk de resultaten van de vragenlijst.</p>
         </header>
+
+        {apiFout && (
+          <p role="alert" className="mb-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+            {apiFout}
+          </p>
+        )}
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
@@ -181,27 +263,57 @@ export default function Admin() {
               id="teamnaam"
               type="text"
               value={teamNaam}
-              onChange={(e) => setTeamNaam(e.target.value)}
+              onChange={(event) => {
+                setTeamNaam(event.target.value)
+                setCategorie('')
+              }}
               onKeyDown={(e) => { if (e.key === 'Enter') handleGenereer() }}
               placeholder="Bijv. Team Innovatie"
               className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-blue-950 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
 
+            <label htmlFor="teamcategorie" className="mb-1 block text-sm font-medium text-blue-950">
+              Categorie
+            </label>
+            <select
+              id="teamcategorie"
+              value={categorie}
+              onChange={(event) => setCategorie(event.target.value)}
+              required
+              disabled={!teamNaam.trim()}
+              className="mb-4 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-blue-950 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            >
+              <option value="" disabled>Kies een categorie</option>
+              {categorieen.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+
             <button
               type="button"
               onClick={handleGenereer}
-              disabled={!teamNaam.trim()}
+              disabled={!teamNaam.trim() || !categorie || bezig}
               className="mb-5 flex w-full items-center justify-center gap-2 rounded-lg bg-orange-400 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Plus className="h-4 w-4" />
-              Teamcode genereren
+              {bezig ? 'Team opslaan...' : 'Teamcode genereren'}
             </button>
 
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <div className="mb-3 flex items-center justify-center">
-                <div className="flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-white">
-                  <QrCode className="h-8 w-8 text-slate-300" />
-                </div>
+                {qrCodeUrl ? (
+                  <a href={vragenlijstLink} aria-label="Open vragenlijst via QR-link">
+                    <img
+                      src={qrCodeUrl}
+                      alt={`QR-code voor ${actieveCode?.name} met teamcode`}
+                      className="h-40 w-40 rounded-lg border border-slate-200 bg-white p-2"
+                    />
+                  </a>
+                ) : (
+                  <div className="flex h-40 w-40 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-white">
+                    <QrCode className="h-8 w-8 text-slate-300" />
+                  </div>
+                )}
               </div>
 
               <div className="mb-3 flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2">
@@ -211,18 +323,31 @@ export default function Admin() {
                 <button
                   type="button"
                   onClick={handleCopy}
-                  disabled={!actieveCode}
-                  aria-label="Kopieer teamcode"
+                  disabled={!vragenlijstLink}
+                  aria-label="Kopieer vragenlijstlink met teamcode"
                   className="text-blue-900/60 transition-colors hover:text-blue-900 disabled:cursor-not-allowed disabled:opacity-30"
                 >
                   {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
                 </button>
               </div>
 
+              {vragenlijstLink && (
+                <a
+                  href={vragenlijstLink}
+                  className="mb-3 block break-all text-xs text-blue-800 underline underline-offset-2"
+                >
+                  {vragenlijstLink}
+                </a>
+              )}
+
               <dl className="space-y-1 text-xs text-slate-500">
                 <div className="flex justify-between">
                   <dt>Team</dt>
                   <dd className="text-slate-700">{actieveCode?.name ?? '—'}</dd>
+                </div>
+                <div className="flex justify-between">
+                  <dt>Categorie</dt>
+                  <dd className="text-right text-slate-700">{actieveCode?.category ?? '—'}</dd>
                 </div>
                 <div className="flex justify-between">
                   <dt>Aangemaakt</dt>

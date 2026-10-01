@@ -1,14 +1,6 @@
 import { useNavigate } from 'react-router'
-import Vragen1 from '../Components/vragen1'
-import Vragen2 from '../Components/vragen2'
-import Vragen3 from '../Components/vragen3'
-import Vragen4 from '../Components/vragen4'
-import Vragen5 from '../Components/vragen5'
-import Vragen6 from '../Components/vragen6'
-import Vragen7 from '../Components/vragen7'
-import Vragen8 from '../Components/vragen8'
-import Vragen9 from '../Components/vragen9'
-import Vragen10 from '../Components/vragen10'
+import { useEffect, useLayoutEffect, useState } from 'react'
+import VragenSet from '../Components/VragenSet'
 import { useVragen } from '../Components/VragenContext'
 import Cirkelv1 from '../images/Foto1.png'
 import Cirkelv2 from '../images/Foto2.png'
@@ -20,156 +12,286 @@ import Cirkelv7 from '../images/Foto7.png'
 import Cirkelv8 from '../images/Foto8.png'
 import Cirkelv9 from '../images/Foto9.png'
 import Cirkelv10 from '../images/Foto10.png'
-import { useEffect, useState } from 'react'
 
-const vragen = [Vragen1, Vragen2, Vragen3, Vragen4, Vragen5, Vragen6, Vragen7, Vragen8, Vragen9, Vragen10]
-const cirkels = [Cirkelv1, Cirkelv2, Cirkelv3, Cirkelv4, Cirkelv5, Cirkelv6, Cirkelv7, Cirkelv8, Cirkelv9, Cirkelv10]
+type ApiVraag = {
+  id: number
+  title: string
+}
 
-const uitleg = [
-  'Een klimaat met veel vrijheid betekent dat medewerkers de autonomie hebben op hun eigen werk vorm te geven. Ze bepalen zelf wanneer ze wat doen en op welke manier. Ook is er vrijheid om eigen projecten op te pakken, ideeën uit te voeren en op eigen initiatief informatie te verzamelen en te delen.',
-  'In een innovatief klimaat worden ideeën positief ontvangen door collega\'s en leidinggevenden. Medewerkers luisteren naar elkaar, er is ruimte voor ideeën en initiatieven worden aangemoedigd. De sfeer rondom nieuwe ideeën is constructief en positief.',
-  'Bij vertrouwen en openheid gaat het om de veiligheid die medewerkers ervaren. Durft iedereen, dus zowel introverte als extraverte mensen, ideeën en meningen naar voren te brengen? Kunnen medewerkers initiatief nemen zonder angst dat ze worden gestraft bij mislukking? Durven ze fouten en geleerde lessen te delen?',
-  'Een dynamische omgeving en levendige organisatie is een omgeving waarin vaak nieuwe dingen gebeuren. Er is voor iedereen voldoende afwisseling, er gebeuren steeds nieuwe dingen en de sfeer is levendig, energiek en vol positiviteit.',
-  'Plezier maken en spelen is van groot belang als het gaat om creativiteit en innovatie. Speelsheid is zowel een manier van ontspannen als een manier om tot resultaat te komen. Een ontspannen sfeer met grappen en gelach kenmerkt veelal een organisatie waar creativiteit hoog in het vaandel staat.',
-  'Bij debat gaat het om een constructieve uitwisseling van voorstellen, ideeën en inzichten op basis van ervaring en kennis (onderzoek). In een innovatief klimaat is open en constructief debat belangrijk, omdat het betekent dat er ruimte is voor diversiteit van standpunten.',
-  'Innoveren betekent altijd risico\'s nemen want het resultaat is onzeker. Als medewerkers risico\'s durven te nemen en niet bang zijn om te falen, is er meer ruimte voor innovatieve ideeën en oplossingen. Leidinggevenden (top van een organisatie) heeft hierin een belangrijke rol.',
-  'In een innovatief klimaat kunnen medewerkers een deel van hun tijd besteden aan het opdoen van inspiratie en het uitwerken van nieuwe ideeën. Voldoende tijd geeft de mogelijkheid om te werken aan oplossingen en ideeën die misschien geen standaard onderdeel zijn van het takenpakket.',
-  'Wanneer het conflictniveau hoog is en de context getypeerd wordt door oorlogsvoering, roddels en geruzie, dan is sprake van een onveilige omgeving. Het spreekt voor zich dat dit een innovatiefklimaat compleet blokkeert.',
-  'In een klimaat waarin je meer uitgedaagd wordt, zowel bij dagelijkse activiteiten als bij lange termijn doelstellingen, zijn medewerkers intrinsiek gemotiveerd om hieraan bij te dragen. Daarbij vinden ze meer betekenis in hun werk, voelen ze hun eigen meerwaarde en investeren ze meer energie.',
+type ApiDimensie = {
+  id: number
+  name: string
+  questions: ApiVraag[]
+}
+
+const API_URL =
+  import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api'
+
+const cirkels = [
+  Cirkelv1,
+  Cirkelv2,
+  Cirkelv3,
+  Cirkelv4,
+  Cirkelv5,
+  Cirkelv6,
+  Cirkelv7,
+  Cirkelv8,
+  Cirkelv9,
+  Cirkelv10,
 ]
 
-const scrollNaarTop = () => {
-  setTimeout(() => {
-    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+const uitleg = [
+  'Een team waarin voldoende vrijheid wordt ervaren, geeft medewerkers ruimte om zelf keuzes te maken in de uitvoering van hun werk. Teamleden krijgen vertrouwen, nemen initiatief en voelen zich verantwoordelijk voor hun eigen bijdrage. Hierdoor ontstaat ruimte om te experimenteren, ideeën uit te werken en kansen te benutten.',
+  'In een innovatief team worden nieuwe ideeën serieus genomen. Teamleden luisteren naar elkaar, bouwen voort op elkaars voorstellen en moedigen initiatief aan. Ideeën hoeven niet direct perfect te zijn; ze krijgen de ruimte om verder ontwikkeld te worden. De sfeer rondom nieuwe ideeën is constructief en positief.',
+  'Vertrouwen en openheid vormen de basis voor een innovatief klimaat. Teamleden voelen zich veilig om vragen te stellen, ideeën in te brengen, fouten te bespreken en feedback te geven. Verschillende perspectieven worden gewaardeerd en er is ruimte voor een open gesprek, ook wanneer onderwerpen lastig of spannend zijn.',
+  'Een dynamisch en levendig team is voortdurend in beweging. Teamleden signaleren kansen, spelen in op veranderingen en zoeken actief naar manieren om het onderwijs, de samenwerking of de dienstverlening te verbeteren. Er is energie, initiatief en de bereidheid om nieuwe mogelijkheden te verkennen.',
+  'Speelsheid en humor zorgen voor ontspanning, verbinding en ruimte om anders te denken. In teams waar gelachen mag worden, ontstaan vaak meer creativiteit en energie. Een positieve sfeer helpt om ideeën te verkennen, samen te leren en uitdagingen met een open blik tegemoet te treden.',
+  'Bij een dialoog worden ideeën, inzichten en verschillende perspectieven open uitgewisseld. In een innovatief team is ruimte voor kritische vragen en constructieve discussies. Verschillende meningen worden gezien als een kans om samen tot betere oplossingen en nieuwe inzichten te komen.',
+  'Innoveren vraagt om het verkennen van nieuwe mogelijkheden waarvan de uitkomst niet altijd vooraf vaststaat. In een innovatief team krijgen medewerkers ruimte om te experimenteren, van ervaringen te leren en verantwoorde risico’s te nemen. Fouten worden gezien als waardevolle leerervaringen.',
+  'In een innovatief team is ruimte om stil te staan, nieuwe inzichten op te doen en ideeën verder uit te werken. Naast de dagelijkse werkzaamheden maken teamleden bewust tijd vrij voor reflectie, onderzoek en ontwikkeling. Hierdoor ontstaan nieuwe kansen en verbeteringen.',
+  'Conflicten zijn niet per definitie negatief. Verschillen van inzicht horen bij samenwerken en kunnen leiden tot nieuwe ideeën en betere oplossingen. In een innovatief team worden spanningen tijdig besproken, respectvol aangepakt en gebruikt om van te leren.',
+  'In een team waarin mensen worden uitgedaagd, ervaren zij betekenis in hun werk en voelen zij zich betrokken bij de gezamenlijke doelen. Teamleden begrijpen waar zij naartoe werken, nemen verantwoordelijkheid en zetten zich actief in om resultaten te bereiken.',
+]
+
+function scrollNaarTop() {
+  window.setTimeout(() => {
+    document.getElementById('top')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
   }, 50)
 }
 
 export default function Vragenlijst() {
-  const { huidig, setHuidig, antwoorden, verstuurNaarBackend, wisSessie } = useVragen()
+  const {
+    huidig,
+    setHuidig,
+    antwoorden,
+    verstuurNaarBackend,
+    wisSessie,
+  } = useVragen()
+
+  const [dimensies, setDimensies] = useState<ApiDimensie[]>([])
+  const [laadFout, setLaadFout] = useState<string | null>(null)
   const [laadStatus, setLaadStatus] = useState<string | null>(null)
+
   const navigate = useNavigate()
-  const HuidigeVraag = vragen[huidig]
+  const huidigeDimensie = dimensies[huidig]
+
+  useLayoutEffect(() => {
+    setHuidig(0)
+  }, [setHuidig])
 
   useEffect(() => {
-  setHuidig(0)
-}, [setHuidig])
+    const controller = new AbortController()
 
-useEffect(() => {
-  scrollNaarTop()
-}, [huidig])
+    async function laadVragen() {
+      try {
+        setLaadFout(null)
+
+        const response = await fetch(`${API_URL}/questions`, {
+          headers: {
+            Accept: 'application/json',
+          },
+          signal: controller.signal,
+        })
+
+        if (!response.ok) {
+          throw new Error(`Vragen laden is mislukt (${response.status}).`)
+        }
+
+        const data: { dimensions?: ApiDimensie[] } = await response.json()
+
+        if (!Array.isArray(data.dimensions) || data.dimensions.length === 0) {
+          throw new Error('De API heeft geen dimensies met vragen teruggegeven.')
+        }
+
+        setDimensies(data.dimensions)
+      } catch (error) {
+        if (error instanceof Error && error.name !== 'AbortError') {
+          setLaadFout(error.message)
+        }
+      }
+    }
+
+    void laadVragen()
+
+    return () => controller.abort()
+  }, [])
+
+  useEffect(() => {
+    scrollNaarTop()
+  }, [huidig])
+
+  const actieveSetNummer = huidig + 1
+  const antwoordenVoorSet = antwoorden[actieveSetNummer] || {}
+  const aantalBeantwoord = Object.keys(antwoordenVoorSet).length
+
+  const magNaarVolgende =
+    huidigeDimensie !== undefined &&
+    aantalBeantwoord === huidigeDimensie.questions.length
+
+  const laatsteDimensie =
+    dimensies.length > 0 && huidig === dimensies.length - 1
+
   const handleWisSessie = () => {
     wisSessie()
     setHuidig(0)
     navigate('/vragenlijst')
   }
 
-  useEffect(() => {
-    scrollNaarTop()
-  }, [huidig])
-  
-  useEffect(() => {
-    scrollNaarTop()
-  }, [huidig])
-
-  const actieveSetNummer = huidig + 1
-  const aantalBeantwoord = Object.keys(antwoorden[actieveSetNummer] || {}).length
-  const magNaarVolgende = aantalBeantwoord === 5
-
   const spreekTekst = (tekst: string) => {
+    if (!('speechSynthesis' in window)) {
+      return
+    }
+
     window.speechSynthesis.cancel()
+
     const spraak = new SpeechSynthesisUtterance(tekst)
     spraak.lang = 'nl-NL'
     spraak.rate = 1
     spraak.pitch = 1
+
     window.speechSynthesis.speak(spraak)
   }
 
   const hanteerVersturen = async () => {
     setLaadStatus('Verzenden...')
-    const resultaat = await verstuurNaarBackend()
-    if (resultaat.succes) {
-      setLaadStatus(null)
-      navigate('/resultaten')
-    } else {
-      setLaadStatus(resultaat.bericht)
+
+    try {
+      const resultaat = await verstuurNaarBackend()
+
+      if (resultaat.succes) {
+        setLaadStatus(null)
+        navigate('/resultaten')
+      } else {
+        setLaadStatus(resultaat.bericht)
+      }
+    } catch {
+      setLaadStatus('Verzenden is mislukt. Probeer het opnieuw.')
     }
   }
 
-  return (
-    <div id="top" className="min-h-dvh w-full overflow-x-hidden">
-      <div className="mt-[3%] md:mx-[20%] mx-2 mb-8 md:p-5 md:mb-10 md:mt-10 bg-white border-3 border-blue-950 rounded-lg shadow-xl/50">
-        <div className="p-1 text-center"></div>
+  if (laadFout) {
+    return (
+      <main className="mx-auto max-w-3xl px-4 py-10 text-center text-red-700 sm:px-6">
+        <h1 className="text-xl font-bold">De vragen konden niet laden</h1>
+        <p className="mt-3">{laadFout}</p>
+        <p className="mt-2 break-all text-sm">
+          Controleer of de backend draait op {API_URL}.
+        </p>
+      </main>
+    )
+  }
 
-        <div className="md:px-[5%] px-[4%] flex justify-between items-center">
+  if (!huidigeDimensie) {
+    return (
+      <main className="px-4 py-10 text-center text-gray-700">
+        Vragen laden...
+      </main>
+    )
+  }
+
+  const huidigeUitleg = uitleg[huidig] ?? huidigeDimensie.name
+  const afbeelding = cirkels[huidig]
+
+  return (
+    <main
+      id="top"
+      className="min-h-dvh w-full overflow-x-hidden bg-none px-3 py-4 sm:px-6 sm:py-8 lg:px-8"
+    >
+      <section className="mx-auto w-full max-w-6xl rounded-xl border-2 bg-white border-blue-950 bg-none p-4 shadow-xl sm:p-6 lg:p-8">
+        <header className="mb-5 flex flex-col gap-3 sm:mb-7 sm:flex-row sm:items-center sm:justify-between">
           <button
-            onClick={() => spreekTekst(uitleg[huidig])}
-            className="flex bg-blue-900 text-white px-10 py-2 rounded-lg hover:bg-blue-800 cursor-pointer mb-1 text-sm font-medium"
+            type="button"
+            onClick={() => spreekTekst(huidigeUitleg)}
+            className="w-full cursor-pointer rounded-lg bg-blue-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-800 sm:w-auto"
           >
             🔊 Voorlezen
           </button>
+
           <button
+            type="button"
             onClick={handleWisSessie}
-            className="p-1.5 bg-blue-50 shadow-xl rounded-xl text-xs text-red-500 hover:underline cursor-pointer"
+            className="w-full cursor-pointer rounded-lg bg-blue-50 px-4 py-3 text-sm font-medium text-red-600 transition hover:bg-blue-100 sm:w-auto"
           >
             Sessie wissen
           </button>
+        </header>
+
+        <div className="mb-5 grid items-center gap-5 lg:mb-8 lg:grid-cols-2 lg:gap-8">
+          <section className="rounded-lg border-2 border-blue-900 bg-blue-50 p-4 sm:p-6">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-800">
+              Dimensie {huidig + 1} van {dimensies.length}
+            </p>
+
+            <h1 className="mb-3 text-2xl font-bold text-blue-950 sm:text-3xl">
+              {huidigeDimensie.name}
+            </h1>
+
+            <p className="text-base leading-relaxed text-gray-700 sm:text-lg">
+              {huidigeUitleg}
+            </p>
+          </section>
+
+          {afbeelding && (
+            <div className="flex min-h-56 items-center justify-center rounded-lg border-2 border-blue-900 bg-white p-4 sm:min-h-72 lg:border-0 lg:bg-transparent">
+              <img
+                src={afbeelding}
+                alt={`Cirkel: ${huidigeDimensie.name}`}
+                className="max-h-72 w-full max-w-sm object-contain sm:max-h-96 lg:max-w-md"
+              />
+            </div>
+          )}
         </div>
 
-        <div className="flex flex-col-reverse md:flex-row [@media(max-height:500px)]:flex-col-reverse! my-auto md:mx-10 max-w-[90%] mx-auto items-center gap-3 mt-3">
-          <div className="bg-blue-100 mx-[1%] border-2 border-blue-900 shadow-xl/40 w-full h-full pt-[2%] pb-[10%] rounded-lg p-2 mb-4">
-            <p className="md:text-lg text-sm md:text-left text-center text-gray-700">{uitleg[huidig]}</p>
-          </div>
-          <div className="w-full flex items-center justify-center bg-white border-2 border-blue-900 rounded-lg p-4 md:bg-transparent md:border-0 md:p-0 mb-4">
-            <img
-              src={cirkels[huidig]}
-              alt="Cirkel"
-              className="md:w-5/9 w-3/4 [@media(max-height:500px)]:w-1/2! mx-auto object-contain"
-            />
-          </div>
-        </div>
-
-        <div className="md:px-[5%] px-[4%]">
-          <div className="flex sm:hidden items-center justify-between px-1 text-sm font-semibold">
-            <span className="text-blue-400">oneens</span>
-            <span className="text-blue-900">eens</span>
+        <section aria-label={`Vragen over ${huidigeDimensie.name}`}>
+          <div className="mb-3 flex items-center justify-between text-sm font-semibold sm:hidden">
+            <span className="text-blue-500">Oneens</span>
+            <span className="text-blue-900">Eens</span>
           </div>
 
-          {HuidigeVraag && <HuidigeVraag />}
-        </div>
+          <VragenSet
+            vragen={huidigeDimensie.questions}
+            setNummer={actieveSetNummer}
+          />
+        </section>
 
         {laadStatus && (
-          <p className="text-center text-sm font-semibold text-red-600 mt-2">{laadStatus}</p>
+          <p
+            role="status"
+            className="mt-4 text-center text-sm font-semibold text-blue-900"
+          >
+            {laadStatus}
+          </p>
         )}
 
-        <div className="px-10 mt-6">
-          <div className="flex mx-auto mb-10 gap-5 justify-center">
-            <button
-              onClick={() => setHuidig(huidig - 1)}
-              disabled={huidig === 0}
-              className="flex-1 bg-orange-400 border-3 opacity-100 border-blue-900 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 hover:bg-orange-300 disabled:bg-orange-400 disabled:border-blue-900 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer font-bold text-center"
-            >
-              Vorige
-            </button>
-            <button
-              onClick={() => {
-                if (huidig === 9) {
-                  hanteerVersturen()
-                } else {
-                  setHuidig(huidig + 1)
-                }
-              }}
-              disabled={!magNaarVolgende}
-              className={`flex-1 border-3 rounded-lg text-blue-950 mt-3 px-[15%] py-[2%] xl:px-30 xl:py-5 font-bold text-center transition-all ${
-                magNaarVolgende
-                  ? 'bg-orange-400 hover:bg-orange-300 opacity-100 border-blue-900 cursor-pointer'
-                  : 'bg-orange-400 border-blue-900 opacity-30 cursor-not-allowed'
-              }`}
-            >
-              {huidig === 9 ? 'Verstuur' : 'Volgende'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+        <footer className="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-5">
+          <button
+            type="button"
+            onClick={() => setHuidig(huidig - 1)}
+            disabled={huidig === 0 || laadStatus === 'Verzenden...'}
+            className="w-full cursor-pointer rounded-lg border-2 border-blue-900 bg-orange-400 px-4 py-3 font-bold text-blue-950 transition hover:bg-orange-300 disabled:cursor-not-allowed disabled:opacity-40 sm:py-4 sm:text-lg"
+          >
+            Vorige
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              if (laatsteDimensie) {
+                void hanteerVersturen()
+              } else {
+                setHuidig(huidig + 1)
+              }
+            }}
+            disabled={!magNaarVolgende || laadStatus === 'Verzenden...'}
+            className="w-full cursor-pointer rounded-lg border-2 border-blue-900 bg-orange-400 px-4 py-3 font-bold text-blue-950 transition hover:bg-orange-300 disabled:cursor-not-allowed disabled:opacity-40 sm:py-4 sm:text-lg"
+          >
+            {laatsteDimensie ? 'Verstuur' : 'Volgende'}
+          </button>
+        </footer>
+      </section>
+    </main>
   )
 }
